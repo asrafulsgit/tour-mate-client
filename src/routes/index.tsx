@@ -1,4 +1,5 @@
 import App from "@/App";
+import About from "@/pages/About";
 import Home from "@/pages/Home";
 import { createBrowserRouter } from "react-router";
 
@@ -11,6 +12,10 @@ const routes = createBrowserRouter([
             {
                 index : true,
                 Component : Home
+            },
+            {
+                Component : About,
+                path : 'about'
             }
         ]
     }
