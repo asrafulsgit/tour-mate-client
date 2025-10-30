@@ -70,7 +70,7 @@ const Nav = () => {
                     </Link>
 
                     <div className="hidden sm:flex">
-                    <Link to='/register' className="rounded-md bg-gray-100 px-5 py-2.5 
+                    <Link to='/signup' className="rounded-md bg-gray-100 px-5 py-2.5 
                     text-sm font-medium text-teal-600" >
                         Register
                     </Link>
