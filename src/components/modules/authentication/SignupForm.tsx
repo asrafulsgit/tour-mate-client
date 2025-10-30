@@ -49,7 +49,7 @@ export function SignupForm({
     try {
       await signup(userInfo).unwrap();
       toast.success("User created successfully");
-      navigate('/verify')
+      navigate("/verify",{state : values.email});
     } catch (error) {
       console.log(error)
     }

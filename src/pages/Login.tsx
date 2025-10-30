@@ -1,5 +1,6 @@
-import LoginForm from "@/components/modules/authentication/LoginForm"
+import { LoginForm } from "@/components/modules/authentication/LoginForm"
 
+ 
 
  
 
