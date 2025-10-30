@@ -3,32 +3,36 @@ import About from "@/pages/About";
 import Home from "@/pages/Home";
 import Login from "@/pages/Login";
 import Signup from "@/pages/Signup";
+import Verify from "@/pages/Verify";
 import { createBrowserRouter } from "react-router";
 
-
 const routes = createBrowserRouter([
-    {
-        Component : App,
-        path : '/',
-        children : [
-            {
-                index : true,
-                Component : Home
-            },
-            {
-                Component : About,
-                path : 'about'
-            },  
-        ]
-    },
-    {
-                Component : Login,
-                path : '/login'
-            },
-    {
-                Component : Signup,
-                path : '/signup'
-            }
+  {
+    Component: App,
+    path: "/",
+    children: [
+      {
+        index: true,
+        Component: Home,
+      },
+      {
+        Component: About,
+        path: "about",
+      },
+    ],
+  },
+  {
+    Component: Login,
+    path: "/login",
+  },
+  {
+    Component: Signup,
+    path: "/signup",
+  },
+  {
+    Component: Verify,
+    path: "/verify",
+  },
 ]);
 
 export default routes;

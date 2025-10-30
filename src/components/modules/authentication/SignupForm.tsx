@@ -9,6 +9,9 @@ import { Button } from "@/components/ui/button";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Password_input from "@/components/ui/Password_input";
+import { useSignupMutation } from "@/redux/features/auth/auth.api";
+import { toast } from "sonner";
+import { useNavigate } from "react-router";
 
 const formSchema = z.object({
   name: z.string().min(3,{error : "Name is too short"}).max(50,{error : "Name is too long"}),
@@ -24,6 +27,8 @@ export function SignupForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const [signup] = useSignupMutation();
+  const navigate = useNavigate();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver : zodResolver(formSchema),
     defaultValues : {
@@ -34,8 +39,20 @@ export function SignupForm({
     }
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) =>{
-    console.log(values)
+  const onSubmit = async(values: z.infer<typeof formSchema>) =>{
+     const userInfo = {
+      name : values.name,
+      email : values.email,
+      password : values.password
+     }
+     
+    try {
+      await signup(userInfo).unwrap();
+      toast.success("User created successfully");
+      navigate('/verify')
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   return (
