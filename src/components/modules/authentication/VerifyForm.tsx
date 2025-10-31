@@ -41,13 +41,21 @@ export function VerifyForm() {
   const navigate = useNavigate();
   const [email,setEmail]= useState(state);
   const [isConfirm,setIsConfirm]=useState(false);
-  
-  useEffect(()=>{
-      if(!email){
-        navigate('/');
-      }
-  },[email])
+  const [timer,setTimer] = useState(120);
 
+  useEffect(()=>{
+      if(!email || !isConfirm){
+         return;
+      }
+
+      const timeInterval = setInterval(() => {
+          setTimer((prev)=> (prev > 0 ? prev - 1 : 0));
+      }, 1000);
+
+      return ()=> clearInterval(timeInterval);
+
+  },[email,isConfirm])
+   
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -76,16 +84,18 @@ export function VerifyForm() {
     }
   }
   const onSubmitEmail=async(data: z.infer<typeof EmailSchema>)=>{
+    const toastId = toast.loading("OTP Sending...")
     try {
       await sendOtp(data).unwrap();
-      toast.success('Email sent successfully');
-      setIsConfirm((prev)=> !prev);
+      toast.success('OTP sent successfully',{id : toastId});
+      setIsConfirm(true);
+      if(timer === 0){
+        setTimer(120);
+      }
     } catch (error) {
       console.log(error);
     }
   }
-
- 
 
   return (
 
@@ -116,10 +126,16 @@ export function VerifyForm() {
                 <FormDescription>
                   Please enter the one-time password sent to your phone.
                 </FormDescription>
+                <Button onClick={()=>onSubmitEmail({email})} type="button"
+                variant='link' className="cursor-pointer"
+                disabled={timer !== 0}> 
+                  Resent OTP {timer}
+                </Button>
                 <FormMessage />
               </FormItem>
             )}
           />
+          
           <Button type="submit">Submit</Button>
         </form>
       </Form>
@@ -164,7 +180,6 @@ export function VerifyForm() {
                     </FieldGroup>
                   </form>
                 </Form>
-      )
-      
+      )   
   );
 }
