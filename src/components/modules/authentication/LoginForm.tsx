@@ -43,12 +43,15 @@ export function LoginForm({
       password : data.password
     }
     try {
-      await login(userInfo).unwrap();
-      toast.success("User login successfull");
+    await login(userInfo).unwrap();
+    toast.success("User login successfull");
     } catch (error : any) {
       console.log(error)
       if(error.status=== 401){
+        toast.error("Verify your account");
         navigate("/verify",{state : data.email});
+      }else{
+        toast.error(error?.data?.message);
       }
     }
   }; 
