@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState } from "react"; 
+import React, { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import * as z from "zod";
+import { z } from "zod";
 import { Mail, Lock, User, Eye, EyeOff } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/form";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const signinSchema = z.object({
   email: z
@@ -30,7 +31,7 @@ type SigninFormValues = z.infer<typeof signinSchema>;
 
 function SigninForm() {
   const router = useRouter();
-  const [showPassword, setShowPassword] = useState(false); 
+  const [showPassword, setShowPassword] = useState(false);
 
   const form = useForm<SigninFormValues>({
     resolver: zodResolver(signinSchema),
@@ -111,23 +112,32 @@ function SigninForm() {
           )}
         />
 
-        {/* remember me */}
-        <FormField
-          control={form.control}
-          name="rememberMe"
-          render={({ field }) => (
-            <FormItem className="flex items-start gap-2">
-              <FormControl>
-                <Checkbox
-                  checked={field.value}
-                  onCheckedChange={(val) => field.onChange(val)}
-                />
-              </FormControl>
-              <span className="text-sm text-muted-foreground">Remember me</span>
-            </FormItem>
-          )}
-        />
-
+        <div className="flex items-center justify-between">
+          {/* remember me */}
+          <FormField
+            control={form.control}
+            name="rememberMe"
+            render={({ field }) => (
+              <FormItem className="flex items-start gap-2">
+                <FormControl>
+                  <Checkbox
+                    checked={field.value}
+                    onCheckedChange={(val) => field.onChange(val)}
+                  />
+                </FormControl>
+                <span className="text-sm text-muted-foreground">
+                  Remember me
+                </span>
+              </FormItem>
+            )}
+          />
+          <Link
+            href="/auth/forgot-password"
+            className="text-sm text-primary hover:text-primary/80 transition"
+          >
+            Forgot password?
+          </Link>
+        </div>
         {/* Submit */}
         <Button type="submit" className="cursor-pointer w-full py-2 sm:mt-6">
           Sign In
