@@ -1,27 +1,10 @@
-'use client';
+"use client";
 
-import Image from 'next/image';
-import Link from 'next/link';
-import { Star, MapPin, Users, Clock } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-
-export interface Tour {
-  id: string;
-  title: string;
-  description: string;
-  image: string;
-  location: string;
-  rating: number;
-  reviews: number;
-  duration: string;
-  groupSize: number;
-  price: number;
-  category: string;
-  guide: {
-    name: string;
-    avatar: string;
-  };
-}
+import Image from "next/image";
+import Link from "next/link";
+import { Star, MapPin, Users, Clock } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Tour } from "@/mock/tours";
 
 interface TourCardProps {
   tour: Tour;
@@ -29,7 +12,7 @@ interface TourCardProps {
 
 export function TourCard({ tour }: TourCardProps) {
   return (
-    <Link href={`/tour/${tour.id}`}>
+    <Link href={`/tours/${tour.id}`}>
       <div className="bg-card rounded-lg overflow-hidden border border-border hover:shadow-lg hover:border-primary transition-all group cursor-pointer h-full flex flex-col">
         {/* Image Container */}
         <div className="relative w-full h-48 overflow-hidden bg-muted">
@@ -89,16 +72,16 @@ export function TourCard({ tour }: TourCardProps) {
                 className="w-full h-full object-cover"
               />
             </div>
-            <span className="text-xs text-muted-foreground">{tour.guide.name}</span>
+            <span className="text-xs text-muted-foreground">
+              {tour.guide.name}
+            </span>
           </div>
 
           {/* Price and Rating */}
           <div className="flex justify-between items-center mt-auto">
             <div>
               <p className="text-xs text-muted-foreground">From</p>
-              <p className="text-xl font-bold text-primary">
-                ${tour.price}
-              </p>
+              <p className="text-xl font-bold text-primary">${tour.price}</p>
             </div>
             <div className="flex items-center gap-1">
               <span className="text-sm font-medium text-foreground">

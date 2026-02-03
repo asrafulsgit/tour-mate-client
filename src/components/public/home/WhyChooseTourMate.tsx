@@ -48,7 +48,7 @@ const features = [
 const WhyChooseTourMate = () => {
   return (
     <section className="py-10 sm:py-15 bg-card border-y border-border">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-2 sm:px-4">
         <SectionHeader
           title="Why Choose TourMate?"
           subTitle="We connect you with experienced local guides for authentic,

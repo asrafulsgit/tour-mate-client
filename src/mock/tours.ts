@@ -1,3 +1,20 @@
+export interface Tour {
+  id: string;
+  title: string;
+  description: string;
+  image: string;
+  location: string;
+  rating: number;
+  reviews: number;
+  duration: string;
+  groupSize: number;
+  price: number;
+  category: string;
+  guide: {
+    name: string;
+    avatar: string;
+  };
+}
 export const mockTours = [
   {
     id: '1',
@@ -134,5 +151,115 @@ export const mockTours = [
       name: 'Rachid Ben Salem',
       avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=32&h=32&fit=crop',
     },
+  },
+];
+
+
+export const categories = [
+  'All',
+  'Adventure',
+  'Beach',
+  'History',
+  'Food',
+  'Sports',
+  'Nature',
+  'Water',
+];
+
+export const mockGuides = [
+  {
+    id: '1',
+    name: 'Alex Johnson',
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop',
+    title: 'Mountain & Adventure Guide',
+    bio: 'With 10+ years of experience, Alex specializes in mountain expeditions and outdoor adventures across North America.',
+    toursCount: 156,
+    rating: 4.9,
+    reviews: 284,
+    languages: ['English', 'Spanish', 'French'],
+  },
+  {
+    id: '2',
+    name: 'Maria Santos',
+    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop',
+    title: 'Tropical & Beach Expert',
+    bio: 'Maria brings island life to life with her deep knowledge of tropical ecosystems and local island culture.',
+    toursCount: 203,
+    rating: 4.8,
+    reviews: 156,
+    languages: ['English', 'Portuguese', 'Spanish'],
+  },
+];
+
+export const mockUserBookings = [
+  {
+    id: 'booking-1',
+    tourId: '1',
+    tourTitle: 'Sunset Hike in the Mountains',
+    date: '2024-03-15',
+    duration: '4 hours',
+    groupSize: 5,
+    price: 245,
+    status: 'confirmed',
+    image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=200&h=150&fit=crop',
+  },
+  {
+    id: 'booking-2',
+    tourId: '4',
+    tourTitle: 'Urban Food & Culture',
+    date: '2024-03-20',
+    duration: '5 hours',
+    groupSize: 3,
+    price: 126,
+    status: 'pending',
+    image: 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=200&h=150&fit=crop',
+  },
+];
+
+export interface Review {
+  id: string;
+  userId: string;
+  userName: string;
+  userAvatar: string; // image URL
+  tourId: string;
+  rating: number; // 1–5
+  date: string; // ISO date string (YYYY-MM-DD)
+  title: string;
+  comment: string;
+}
+
+export const mockReviews : Review[] = [
+  {
+    id: 'review-1',
+    userId: 'user-123',
+    userName: 'Sarah Mitchell',
+    userAvatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=48&h=48&fit=crop',
+    tourId: '1',
+    rating: 5,
+    date: '2024-02-15',
+    title: 'Amazing experience!',
+    comment: 'Alex was an incredible guide. The sunset views were absolutely breathtaking, and he shared so much knowledge about the area. Highly recommended!',
+  },
+  {
+    id: 'review-2',
+    userId: 'user-456',
+    userName: 'James Chen',
+    userAvatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=48&h=48&fit=crop',
+    tourId: '1',
+    rating: 4,
+    date: '2024-02-10',
+    title: 'Great tour, worth the price',
+    comment: 'Really enjoyed this tour. The guide was knowledgeable and friendly. The only minor thing was the hiking was a bit more challenging than expected.',
+  },
+  {
+    id: 'review-3',
+    userId: 'user-789',
+    userName: 'Emma Wilson',
+    userAvatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=48&h=48&fit=crop',
+    tourId: '1',
+    rating: 5,
+    date: '2024-02-05',
+    title: 'Unforgettable memory',
+    comment: 'Best decision ever! The whole experience was perfectly organized. Alex made us feel so comfortable and safe throughout the entire hike.',
   },
 ];

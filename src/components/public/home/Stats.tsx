@@ -2,7 +2,7 @@
 const Stats = () => {
   return (
     <section className="pb-10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-2 sm:px-4">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-8 text-center">
           <div>
             <div className="text-xl sm:text-5xl font-bold text-primary mb-1 sm:mb-2">

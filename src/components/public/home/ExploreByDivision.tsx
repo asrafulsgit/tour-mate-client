@@ -4,7 +4,7 @@ import Link from "next/link";
 const ExploreByDivision = () => {
   return (
     <section className="py-10 sm:py-15 bg-card border-y border-border">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-2 sm:px-4">
         <SectionHeader title="Explore by Division" subTitle="Discover amazing experiences across Bangladesh"/>
         <div className="mt-8 sm:mt-12 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
           {[

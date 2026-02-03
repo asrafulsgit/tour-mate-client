@@ -11,7 +11,7 @@ const Hero = () => {
   const [guests, setGuests] = useState("1");
   return (
     <section className="relative pt-10 md:pt-30 md:pb-30 bg-linear-to-b from-primary/10 to-background">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-2 sm:px-4">
         <div className="text-center mb-12">
           <h1 className="heading text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground mb-6 text-balance">
             Discover Adventures Around You

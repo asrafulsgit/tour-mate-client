@@ -9,7 +9,7 @@ const FeaturedTours = () => {
   const featuredTours = mockTours.slice(0, 6);
   return (
     <section className="py-10 sm:py-15">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-2 sm:px-4">
         <div className="flex justify-between items-center mb-8 sm:mb-12">
           <SectionHeader
             title="Featured Tours"
