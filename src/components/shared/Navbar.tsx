@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, X, LogOut} from "lucide-react";
+import { Menu, X, LogOut } from "lucide-react";
 import Logo from "./Logo";
 import Title from "./Title";
 
@@ -108,12 +108,12 @@ const navItems: Item[] = [
     path: "/tours",
   },
   {
-    name: "Contact",
-    path: "/contact",
+    name: "About",
+    path: "/about",
   },
   {
-    name: "About Us",
-    path: "/about-us",
+    name: "Contact",
+    path: "/contact",
   },
   {
     name: "Blog",
@@ -263,8 +263,10 @@ function Navbar({
           />
 
           {/* Mobile Menu */}
-          <div className="fixed left-0 right-0 top-16 bg-background border-b 
-          border-border shadow-lg z-50 md:hidden animate-in slide-in-from-top-4 duration-300">
+          <div
+            className="fixed left-0 right-0 top-16 bg-background border-b 
+          border-border shadow-lg z-50 md:hidden animate-in slide-in-from-top-4 duration-300"
+          >
             <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-4 pt-4">
               <div className="flex flex-col gap-3">
                 {navItems.map((item) => (
