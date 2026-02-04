@@ -27,7 +27,7 @@ const Blogs = () => {
               placeholder="Search articles..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 py-3 border border-primary"
+              className="pl-10 py-3 border border-primary/30"
             />
           </div>
         </div>
@@ -42,7 +42,7 @@ const Blogs = () => {
                 <Link
                   key={post.id}
                   href={`/blog/${post.id}`}
-                  className="group border border-border rounded-lg overflow-hidden 
+                  className="group hover:bg-primary/5 border border-border rounded-lg overflow-hidden 
                   hover:border-primary transition"
                 >
                   <div className="bg-muted p-6 text-4xl h-40 flex items-center justify-center group-hover:bg-muted/80 transition">

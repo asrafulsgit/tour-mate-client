@@ -868,7 +868,7 @@ function BlogDetailPage() {
           {/* Author Bio */}
           <div className="mt-6 sm:mt-12 p-3 sm:p-6 bg-card border border-border rounded-lg">
             <div className="flex items-start gap-2 sm:gap-4">
-              <div className="w-12 sm:w-16 h-12 sm:h-16 bg-primary rounded-full flex items-center justify-center text-2xl font-bold text-primary-foreground flex-shrink-0">
+              <div className="w-12 sm:w-16 h-12 sm:h-16 bg-primary rounded-full flex items-center justify-center text-2xl font-bold text-primary-foreground shrink-0">
                 {article.author.charAt(0)}
               </div>
               <div>
