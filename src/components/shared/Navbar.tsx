@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Menu, X, LogOut } from "lucide-react";
 import Logo from "./Logo";
 import Title from "./Title";
+import { useParams, usePathname } from "next/navigation";
 
 export enum Role {
   USER = "USER",
@@ -134,6 +135,8 @@ function Navbar({
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  const pathName = usePathname();
+
   // Handle click outside to close dropdown
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -185,7 +188,7 @@ function Navbar({
                 <Link
                   key={item.path}
                   href={item.path}
-                  className="text-foreground hover:text-primary transition"
+                  className={`${pathName.startsWith(item.path) && "text-primary"} text-foreground hover:text-primary transition`}
                 >
                   {item.name}
                 </Link>
