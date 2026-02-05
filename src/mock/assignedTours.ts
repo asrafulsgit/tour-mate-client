@@ -3,7 +3,7 @@ export const mockAssignedTours = [
     id: 'assigned-1',
     tourId: '1',
     tourTitle: 'Sunset Hike in the Mountains',
-    date: '2024-03-15',
+    date: '2026-02-15',
     time: '16:00',
     duration: '4 hours',
     location: 'Colorado Rockies, USA',

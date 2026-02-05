@@ -3,12 +3,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import {
-  DollarSign,
-  Users,
-  TrendingUp,
-  MessageCircle,
-} from "lucide-react";
+import { DollarSign, Users, TrendingUp, MessageCircle } from "lucide-react";
 import { CheckCircle2, Clock } from "lucide-react";
 import { mockTours } from "@/mock/tours";
 import { mockAssignedTours } from "@/mock/assignedTours";
@@ -18,9 +13,8 @@ import GuideStats from "./GuideStats";
 const guideTours = mockTours.slice(0, 3);
 
 // Calculate guide statistics
- 
 
-function GuideDashboardPage() { 
+function GuideDashboardPage() {
   const recentTours = mockAssignedTours
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, 3);
@@ -72,8 +66,10 @@ function GuideDashboardPage() {
                             : "Pending"}
                         </Badge>
                       </div>
-                      <div className="grid grid-cols-3 md:grid-cols-4 gap-2 
-                      text-sm text-muted-foreground">
+                      <div
+                        className="grid grid-cols-3 md:grid-cols-4 gap-2 
+                      text-sm text-muted-foreground"
+                      >
                         <div>
                           <p className="text-xs text-muted-foreground">
                             Date & Time
@@ -97,11 +93,16 @@ function GuideDashboardPage() {
                           <p className="font-medium text-foreground">
                             {tour.duration}
                           </p>
-                        </div> 
+                        </div>
                       </div>
                     </div>
                     <div className="flex gap-2 mt-2">
-                      <Button variant="outline" size="sm" className="w-full" asChild>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-full"
+                        asChild
+                      >
                         <Link
                           href={`/guide-dashboard/assigned-tours/${tour.id}`}
                         >

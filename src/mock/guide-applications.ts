@@ -10,8 +10,8 @@ export interface GuideApplication {
   experience: string;
   nidPhoto: string;
   status: GuideApplicationStatus;
-  appliedOn: string; // ISO date string
-  approvedOn?: string; // ISO date string
+  appliedOn: string;  
+  approvedOn?: string; 
 }
 
 
