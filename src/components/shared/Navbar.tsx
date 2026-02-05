@@ -131,7 +131,7 @@ interface HeaderProps {
   userRole?: Role.USER | Role.GUIDE | Role.ADMIN | Role.SUPER_ADMIN;
 }
 
-function Navbar({ isAuthenticated = true, userRole = Role.USER }: HeaderProps) {
+function Navbar({ isAuthenticated = true, userRole = Role.GUIDE }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -269,8 +269,8 @@ function Navbar({ isAuthenticated = true, userRole = Role.USER }: HeaderProps) {
 
           {/* Mobile Menu */}
           <div
-            className="fixed left-0 right-0 top-16 bg-background border-b 
-          border-border shadow-lg z-50 md:hidden animate-in slide-in-from-top-4 duration-300"
+            className="fixed left-0 right-0 top-15 bg-background border-b 
+          border-border shadow-lg z-50 md:hidden animate-in slide-in-from-top-8 duration-500"
           >
             <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-4 pt-4">
               <div className="flex flex-col">
