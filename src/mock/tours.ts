@@ -190,20 +190,33 @@ export const mockGuides = [
     languages: ['English', 'Portuguese', 'Spanish'],
   },
 ];
-
+ 
 export type BookingStatus = "confirmed" | "pending" | "cancelled";
+
+export type PaymentStatus = "completed" | "pending" | "failed" | "refunded";
+
+export interface Guide {
+  name: string;
+  phone: string;
+  avatar: string;
+}
 
 export interface Booking {
   id: string;
   tourId: string;
   tourTitle: string;
-  date: string;        
-  duration: string;     
+  date: string;         
+  duration: string;
   groupSize: number;
   price: number;
   status: BookingStatus;
-  image: string;       
+  paymentStatus: PaymentStatus;
+  image: string;
+  guide: Guide | null;
+  bookedOn: string;     
+  transactionId: string;
 }
+
 
 
 export const mockUserBookings :Booking[] = [
@@ -216,7 +229,11 @@ export const mockUserBookings :Booking[] = [
     groupSize: 5,
     price: 245,
     status: 'confirmed',
+    paymentStatus: 'completed',
     image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=200&h=150&fit=crop',
+    guide: { name: 'Alex Johnson', phone: '+1-555-0101', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=32&h=32&fit=crop' },
+    bookedOn: '2024-02-01',
+    transactionId: 'TXN-001',
   },
   {
     id: 'booking-2',
@@ -227,7 +244,41 @@ export const mockUserBookings :Booking[] = [
     groupSize: 3,
     price: 126,
     status: 'pending',
+    paymentStatus: 'pending',
     image: 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=200&h=150&fit=crop',
+    guide: null,
+    bookedOn: '2024-02-15',
+    transactionId: 'TXN-002',
+  },
+  {
+    id: 'booking-3',
+    tourId: '6',
+    tourTitle: 'Wildlife Safari Expedition',
+    date: '2024-04-10',
+    duration: '7 hours',
+    groupSize: 4,
+    price: 600,
+    status: 'confirmed',
+    paymentStatus: 'completed',
+    image: 'https://images.unsplash.com/photo-1488747807830-63789f68bb65?w=200&h=150&fit=crop',
+    guide: { name: 'Kwame Osei', phone: '+1-555-0102', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=32&h=32&fit=crop' },
+    bookedOn: '2024-01-20',
+    transactionId: 'TXN-003',
+  },
+  {
+    id: 'booking-4',
+    tourId: '2',
+    tourTitle: 'Tropical Island Beach Tour',
+    date: '2024-05-05',
+    duration: '6 hours',
+    groupSize: 2,
+    price: 130,
+    status: 'pending',
+    paymentStatus: 'pending',
+    image: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=200&h=150&fit=crop',
+    guide: null,
+    bookedOn: '2024-02-20',
+    transactionId: 'TXN-004',
   },
 ];
 

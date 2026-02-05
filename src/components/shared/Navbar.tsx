@@ -34,6 +34,10 @@ const profileItems: Record<Role, Item[]> = {
       name: "My Bookings",
       path: "/user/my-bookings",
     },
+    {
+      name: "Guide Application",
+      path: "/user/guide-application",
+    },
   ],
   [Role.GUIDE]: [
     {
@@ -127,10 +131,7 @@ interface HeaderProps {
   userRole?: Role.USER | Role.GUIDE | Role.ADMIN | Role.SUPER_ADMIN;
 }
 
-function Navbar({
-  isAuthenticated = true,
-  userRole = Role.USER,
-}: HeaderProps) {
+function Navbar({ isAuthenticated = true, userRole = Role.USER }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -278,7 +279,8 @@ function Navbar({
                     onClick={() => setMobileMenuOpen(false)}
                     key={item.path}
                     href={item.path}
-                    className="text-foreground hover:text-primary transition py-2"
+                    className={`text-foreground hover:text-primary transition py-2
+                    ${pathName.startsWith(item.path) && "text-primary"}`}
                   >
                     {item.name}
                   </Link>

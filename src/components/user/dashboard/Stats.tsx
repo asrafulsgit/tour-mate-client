@@ -9,7 +9,7 @@ const UserStats = () => {
     totalSpent: 10000,
   };
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 py-8 sm:py-12">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pb-8">
       <StatCard
         title="Total Bookings"
         value={stats.totalBookings}

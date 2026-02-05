@@ -13,10 +13,10 @@ const Hero = () => {
     <section className="relative pt-10 md:pt-30 md:pb-30 bg-linear-to-b from-primary/10 to-background">
       <div className="max-w-7xl mx-auto px-2 sm:px-4">
         <div className="text-center mb-12">
-          <h1 className="heading text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground mb-6 text-balance">
+          <h1 className="heading text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground mb-2 sm:mb-6 text-balance">
             Discover Adventures Around You
           </h1>
-          <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto text-balance">
+          <p className="text-base sm:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto text-balance">
             Connect with expert local guides and book unforgettable experiences
             worldwide. Create memories that last a lifetime.
           </p>

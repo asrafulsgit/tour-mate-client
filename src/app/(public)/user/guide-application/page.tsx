@@ -1,11 +1,7 @@
-import React from 'react'
+import GuideApplicationPage from "@/components/user/guide-application";
 
 const page = () => {
-  return (
-    <div>
-      <h1>admin booking management</h1>
-    </div>
-  )
-}
+  return <GuideApplicationPage />;
+};
 
-export default page
+export default page;

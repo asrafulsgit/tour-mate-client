@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calendar, Clock, DollarSign, Users } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
+import Link from "next/link"; 
 import { Booking } from "@/mock/tours";
 
 export default function BookingsTable({
@@ -96,7 +96,7 @@ export default function BookingsTable({
                 <TableCell className="text-right">
                   <div className="flex justify-end gap-2">
                     <Button size="sm" variant="outline" asChild>
-                      <Link href={`/dashboard/bookings/${booking.id}`}>
+                      <Link href={`/user/my-bookings/${booking.id}`}>
                         Details
                       </Link>
                     </Button>

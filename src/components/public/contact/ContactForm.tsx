@@ -99,7 +99,9 @@ const ContactForm = () => {
                 onChange={handleChange}
                 required
                 rows={6}
-                className="w-full px-3 py-2 border border-border rounded-md bg-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full px-3 py-2 border border-border rounded-md bg-card text-foreground 
+                placeholder:text-muted-foreground focus:outline-none focus:ring-2 
+                focus:ring-primary"
               />
             </div>
 

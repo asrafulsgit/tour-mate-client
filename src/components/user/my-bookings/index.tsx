@@ -1,8 +1,7 @@
 import UserHeader from "../UserHeader";
 import { mockUserBookings } from "@/mock/tours";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import BookingCard from "./BookingCard";
+import Link from "next/link"; 
 import BookingsTable from "./BookingsTable";
 
 const MyBookings = () => {

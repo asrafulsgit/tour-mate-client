@@ -23,7 +23,7 @@ const ToursSection = ({
 
       {/* Tours */}
       {tours.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
           {tours.map((tour) => (
             <TourCard key={tour.id} tour={tour} />
           ))}
