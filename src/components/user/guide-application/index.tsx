@@ -9,8 +9,7 @@ import NotFoundApplication from "./NotFoundApplication";
 
 export default function GuideApplicationPage() {
   const [activeTab, setActiveTab] = useState<"status" | "new">("status");
-  const [submitSuccess, setSubmitSuccess] = useState(false);
-  // Get user's application if exists
+  const [submitSuccess, setSubmitSuccess] = useState(false); 
   const userApplication = mockGuideApplications.find(
     (app) => app.userId === "user",
   );

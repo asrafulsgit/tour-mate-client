@@ -1,18 +1,17 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { FileText } from "lucide-react"; 
+import { FileText } from "lucide-react";
 
 const NotFoundApplication = () => {
   return (
-    <Card className="p-4 sm:p-8 text-center gap-0 sm:gap-6">
+    <Card className="p-4 sm:p-8 text-center gap-2 sm:gap-6">
       <FileText
-        size={48}
-        className="mx-auto mb-4 text-muted-foreground opacity-50"
+        className="mx-auto text-muted-foreground opacity-50 w-9 h-9 sm:w-12 sm:h-12 lg:w-14 lg:h-14"
       />
-      <h3 className="text-lg font-semibold text-foreground mb-2">
+      <h3 className="text-lg font-semibold text-foreground">
         No Application Found
       </h3>
-      <p className="text-muted-foreground mb-6">
+      <p className="text-muted-foreground mb-4 sm:mb-6">
         You haven't submitted a guide application yet. Submit your application
         to get started.
       </p>

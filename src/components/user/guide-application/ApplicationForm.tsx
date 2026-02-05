@@ -62,10 +62,9 @@ const ApplicationForm = () => {
   };
   return (
     <Card className="p-4 sm:p-8 gap-3 sm:gap-6">
-      <h2 className="text-xl font-bold text-foreground sm:mb-6">
+      <h2 className="text-xl font-bold text-foreground">
         Guide Application Form
       </h2>
-
       <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
         {/* Division Selection */}
         <div>
@@ -93,7 +92,7 @@ const ApplicationForm = () => {
               {errors.division}
             </p>
           )}
-        </div> 
+        </div>
 
         {/* NID Photo Upload */}
         <div>
@@ -150,13 +149,13 @@ const ApplicationForm = () => {
               className="w-4 h-4 mt-1 shrink-0"
             />
             <label htmlFor="agreement" className="text-sm text-foreground">
-              I agree to TourMate's Guide Terms and Conditions. 
+              I agree to TourMate's Guide Terms and Conditions.
             </label>
           </div>
         </div>
 
         {/* Submit Button */}
-        <div className="flex gap-3 pt-4">
+        <div className="flex gap-3 sm:pt-4">
           <Button type="submit" disabled={isSubmitting} className="flex-1">
             {isSubmitting ? "Submitting..." : "Submit Application"}
           </Button>

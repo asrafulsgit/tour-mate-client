@@ -273,7 +273,7 @@ function Navbar({ isAuthenticated = true, userRole = Role.USER }: HeaderProps) {
           border-border shadow-lg z-50 md:hidden animate-in slide-in-from-top-4 duration-300"
           >
             <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-4 pt-4">
-              <div className="flex flex-col gap-3">
+              <div className="flex flex-col">
                 {navItems.map((item) => (
                   <Link
                     onClick={() => setMobileMenuOpen(false)}
