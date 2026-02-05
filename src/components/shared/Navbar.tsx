@@ -55,10 +55,6 @@ const profileItems: Record<Role, Item[]> = {
       path: "/admin/dashboard",
     },
     {
-      name: "Profile",
-      path: "/admin/profile",
-    },
-    {
       name: "User Management",
       path: "/admin/user-management",
     },
@@ -73,6 +69,10 @@ const profileItems: Record<Role, Item[]> = {
     {
       name: "Booking Management",
       path: "/admin/booking-management",
+    },
+    {
+      name: "Division Management",
+      path: "/admin/division-management",
     },
   ],
   [Role.SUPER_ADMIN]: [
@@ -81,10 +81,6 @@ const profileItems: Record<Role, Item[]> = {
       path: "/admin/dashboard",
     },
     {
-      name: "Profile",
-      path: "/admin/profile",
-    },
-    {
       name: "User Management",
       path: "/admin/user-management",
     },
@@ -99,6 +95,10 @@ const profileItems: Record<Role, Item[]> = {
     {
       name: "Booking Management",
       path: "/admin/booking-management",
+    },
+    {
+      name: "Division Management",
+      path: "/admin/division-management",
     },
   ],
 };
@@ -128,8 +128,8 @@ interface HeaderProps {
 }
 
 function Navbar({
-  isAuthenticated = false,
-  userRole = Role.ADMIN,
+  isAuthenticated = true,
+  userRole = Role.USER,
 }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
@@ -234,6 +234,7 @@ function Navbar({
                           <Link
                             key={item.path}
                             href={item.path}
+                            onClick={() => setProfileMenuOpen(false)}
                             className="px-4 py-2 text-sm text-foreground hover:bg-muted transition flex items-center gap-2"
                           >
                             {item.name}

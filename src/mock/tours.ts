@@ -191,7 +191,22 @@ export const mockGuides = [
   },
 ];
 
-export const mockUserBookings = [
+export type BookingStatus = "confirmed" | "pending" | "cancelled";
+
+export interface Booking {
+  id: string;
+  tourId: string;
+  tourTitle: string;
+  date: string;        
+  duration: string;     
+  groupSize: number;
+  price: number;
+  status: BookingStatus;
+  image: string;       
+}
+
+
+export const mockUserBookings :Booking[] = [
   {
     id: 'booking-1',
     tourId: '1',
