@@ -9,6 +9,7 @@ import { mockTours } from "@/mock/tours";
 import { mockAssignedTours } from "@/mock/assignedTours";
 import UserHeader from "@/components/user/UserHeader";
 import GuideStats from "./GuideStats";
+import AssignedTourCard from "../assigned-tours/AssignedTourCard";
 
 const guideTours = mockTours.slice(0, 3);
 
@@ -40,78 +41,8 @@ function GuideDashboardPage() {
           </div>
           <div className="space-y-2 sm:space-y-4">
             {recentTours.length > 0 ? (
-              recentTours.map((tour) => {
-                const tourDate = new Date(tour.date);
-                return (
-                  <div
-                    key={tour.id}
-                    className="p-2 sm:p-4 border border-border 
-                    rounded-lg hover:bg-muted/50 transition"
-                  >
-                    <div className="grow">
-                      <div className="flex items-center gap-2 mb-2">
-                        <p className="text-sm sm:text-base font-semibold text-foreground">
-                          {tour.tourTitle}
-                        </p>
-                        <Badge
-                          variant={
-                            tour.status === "confirmed"
-                              ? "secondary"
-                              : "outline"
-                          }
-                          className="text-[10px] sm:text-xs"
-                        >
-                          {tour.status === "confirmed"
-                            ? "Confirmed"
-                            : "Pending"}
-                        </Badge>
-                      </div>
-                      <div
-                        className="grid grid-cols-3 md:grid-cols-4 gap-2 
-                      text-sm text-muted-foreground"
-                      >
-                        <div>
-                          <p className="text-xs text-muted-foreground">
-                            Date & Time
-                          </p>
-                          <p className="text-xs sm:text-base font-medium text-foreground">
-                            {tourDate.toLocaleDateString()} at {tour.time}
-                          </p>
-                        </div>
-                        <div>
-                          <p className="text-xs text-muted-foreground">
-                            Guests
-                          </p>
-                          <p className="font-medium text-foreground">
-                            {tour.registeredGuests}/{tour.maxGuests}
-                          </p>
-                        </div>
-                        <div>
-                          <p className="text-xs text-muted-foreground">
-                            Duration
-                          </p>
-                          <p className="font-medium text-foreground">
-                            {tour.duration}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex gap-2 mt-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="w-full"
-                        asChild
-                      >
-                        <Link
-                          href={`/guide-dashboard/assigned-tours/${tour.id}`}
-                        >
-                          Details
-                        </Link>
-                      </Button>
-                    </div>
-                  </div>
-                );
+              recentTours.map((tour) => { 
+                return <AssignedTourCard key={tour.id} tour={tour} />;
               })
             ) : (
               <div className="text-center py-8">
