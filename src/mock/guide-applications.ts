@@ -24,7 +24,7 @@ export const mockGuideApplications : GuideApplication[] = [
     email: 'user@example.com',
     division: 'Dhaka',
     experience: '5+ years leading adventure tours',
-    nidPhoto: 'https://via.placeholder.com/300x200?text=NID+Photo',
+    nidPhoto: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=200&h=150&fit=crop',
     status: 'pending',
     appliedOn: '2024-02-10',
   },

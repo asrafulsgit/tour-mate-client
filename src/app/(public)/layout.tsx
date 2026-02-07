@@ -8,9 +8,11 @@ export default function RootLayout({
 }) {
   return (
     <>
-      <Navbar />
-      {children}
-      <Footer />
+      <div className="min-h-screen bg-background flex flex-col">
+        <Navbar />
+        {children}
+        <Footer />
+      </div>
     </>
   );
 }
