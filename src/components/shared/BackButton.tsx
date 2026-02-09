@@ -10,7 +10,7 @@ const BackButton = () => {
   };
   return (
     <Button size="icon" variant="link"
-      className="border text-muted-foreground hover:text-foreground transition"
+      className="border text-muted-foreground hover:text-foreground transition cursor-pointer"
       onClick={handleBack}
     >
       <ArrowLeft size={20} />

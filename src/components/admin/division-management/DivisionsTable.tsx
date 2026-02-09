@@ -8,7 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Eye, Plus, SquarePen, Trash2 } from "lucide-react";
+import { SquarePen, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { mockDivisions } from "@/mock/divisions";
 import Image from "next/image";
@@ -34,28 +34,16 @@ const DivisiosTable = memo(
                 <TableCell>
                   <Image
                     src={division.thumbnail}
-                    width={32}
-                    height={32}
-                    className="w-8 h-8 rounded-full"
+                    width={56}
+                    height={40}
+                    className="w-14 h-10 rounded-lg"
                     alt={division.name}
                   />
                 </TableCell>
                 <TableCell>{division.name}</TableCell>
-                <TableCell className="line-clamp-1">
-                  {division.description}
-                </TableCell>
+                <TableCell>{division.description}</TableCell>
                 <TableCell className="text-right">
                   <div className="flex justify-end gap-2">
-                    <Link href={`/admin/division-management/create`}>
-                      <Button
-                        size="icon-sm"
-                        variant="outline"
-                        className={cn("", "cursor-pointer")}
-                      >
-                        <Plus size={16} />
-                      </Button>
-                    </Link>
-
                     <Link
                       href={`/admin/division-management/${division.id}/update`}
                     >

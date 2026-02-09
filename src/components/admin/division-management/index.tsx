@@ -3,10 +3,12 @@
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, Download } from "lucide-react";
+import { Search, Download, Plus } from "lucide-react";
 import UserHeader from "@/components/user/UserHeader";
 import DivisiosTable from "./DivisionsTable";
 import DeleteModel from "./DeleteModel";
+import Link from "next/link";
+import { cn } from "@/lib/utils";
 
 type ModalState = { type: "NONE" } | { type: "DELETE"; id: string };
 
@@ -26,7 +28,7 @@ function DivisionManagementPage() {
             <div className="relative flex-1">
               <Search
                 size={18}
-                className="absolute left-3 top-3 text-muted-foreground"
+                className="absolute left-3 top-2.5 text-muted-foreground"
               />
               <Input
                 placeholder="Search bookings..."
@@ -35,10 +37,12 @@ function DivisionManagementPage() {
                 onChange={(e) => setSearch(e.target.value)}
               />
             </div>
-            <Button variant="outline">
-              <Download size={16} className="mr-2" />
-              Export
-            </Button>
+            <Link href={"/admin/division-management/create"}>
+              <Button variant="default" className={cn("", "cursor-pointer")}>
+                <Plus size={16} />
+                Create
+              </Button>
+            </Link>
           </div>
 
           {/* Table */}

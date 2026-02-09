@@ -41,9 +41,9 @@ const ToursTable = memo(({ onDelete }: Props) => {
               <TableCell className="flex items-center gap-3">
                 <Image
                   src={tour.image}
-                  width={32}
-                  height={32}
-                  className="w-8 h-8 rounded-full"
+                  width={56}
+                  height={40}
+                  className="w-14 h-10 rounded-lg"
                   alt={tour.title}
                 />
                 {tour.title}
