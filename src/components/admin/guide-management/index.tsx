@@ -7,6 +7,7 @@ import { Search } from "lucide-react";
 import UserHeader from "@/components/user/UserHeader";
 import GuideTable from "./GuideTable";
 import GuideDialogs from "./GuideDialogs";
+import { cn } from "@/lib/utils";
 
 type ModalState =
   | { type: "NONE" }
@@ -28,7 +29,7 @@ function GuideManagementPage() {
         subTitle="Review and approve guide applications"
       />
 
-      <section className="py-6">
+      <section className="sm:pt-4 pb-8">
         <div className="max-w-7xl mx-auto px-4 space-y-6">
           {/* Filters */}
           <div className="space-y-4">
@@ -45,12 +46,13 @@ function GuideManagementPage() {
               />
             </div>
 
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               {["all", "pending", "approved", "rejected"].map((s) => (
                 <Button
                   key={s}
-                  variant={status === s ? "default" : "outline"}
+                  variant={status === s ? "default" : "outline"} 
                   onClick={() => setStatus(s as any)}
+                  className={cn("","text-xs sm:text-base px-2 sm:px-4 py-1 sm:py-2")}
                 >
                   {s.charAt(0).toUpperCase() + s.slice(1)}
                 </Button>

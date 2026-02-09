@@ -24,8 +24,8 @@ function GuideTable({ onView, onApprove, onReject }: Props) {
   return (
     <div className="space-y-4">
       {mockGuideApplications.map((app) => (
-        <Card key={app.id} className="p-6">
-          <div className="flex items-start justify-between">
+        <Card key={app.id} className="p-4 sm:p-6">
+          <div className="flex flex-col sm:flex-row items-start justify-between">
             <div className="grow">
               <div className="flex items-center gap-3 mb-4">
                 {app.status === "pending" && (
@@ -48,7 +48,7 @@ function GuideTable({ onView, onApprove, onReject }: Props) {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-2 sm:gap-4 mb-4">
                 <div>
                   <p className="text-xs text-muted-foreground mb-1">Email</p>
                   <p className="text-sm font-medium text-foreground">
@@ -88,17 +88,19 @@ function GuideTable({ onView, onApprove, onReject }: Props) {
             </div>
 
             {/* Actions */}
-            <div className="flex flex-col gap-2">
-              <Button variant="outline" size="sm" onClick={() => onView(app.id)}>
-                <Eye size={14} className="mr-1" />
+            <div className="flex sm:flex-col gap-2">
+              <Button variant="outline"
+              size={"sm"}
+              className={cn("","text-xs sm:text-sm px-3 sm:px-4")}
+              onClick={() => onView(app.id)}> 
                 Details
               </Button>
 
               {app.status === "pending" && (
                 <>
-                  <Button
-                    size="sm"
-                    className="bg-green-600 hover:bg-green-700 text-white"
+                  <Button 
+                  size={"sm"}
+                    className={cn("","bg-green-600 hover:bg-green-700 text-xs sm:text-sm px-3 sm:px-4 text-white")}
                     onClick={() => onApprove(app.id)}
                   >
                     Approve
@@ -106,6 +108,7 @@ function GuideTable({ onView, onApprove, onReject }: Props) {
                   <Button
                     size="sm"
                     variant="destructive"
+                    className={cn("","text-xs sm:text-sm px-3 sm:px-4")}
                     onClick={() => onReject(app.id)}
                   >
                     Reject

@@ -1,11 +1,7 @@
-import React from 'react'
+import TourManagementPage from "@/components/admin/tour-management";
 
 const page = () => {
-  return (
-    <div>
-      <h1>admin tour management</h1>
-    </div>
-  )
-}
+  return <TourManagementPage />;
+};
 
-export default page
+export default page;

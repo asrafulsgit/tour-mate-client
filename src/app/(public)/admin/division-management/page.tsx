@@ -1,10 +1,7 @@
- 
-const page = () => {
-  return (
-    <div>
-      <h1>admin division management</h1>
-    </div>
-  )
-}
+import DivisionManagementPage from "@/components/admin/division-management";
 
-export default page
+const page = () => {
+  return <DivisionManagementPage />;
+};
+
+export default page;
