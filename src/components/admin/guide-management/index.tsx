@@ -36,7 +36,7 @@ function GuideManagementPage() {
             <div className="relative">
               <Search
                 size={18}
-                className="absolute left-3 top-3 text-muted-foreground"
+                className="absolute left-3 top-2.5 text-muted-foreground"
               />
               <Input
                 placeholder="Search applicants..."

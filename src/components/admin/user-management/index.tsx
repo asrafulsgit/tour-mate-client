@@ -27,7 +27,7 @@ export default function UserManagementPage() {
           {/* Filters */}
           <div className="flex gap-3">
             <div className="relative flex-1">
-              <Search size={18} className="absolute left-3 top-3 text-muted-foreground" />
+              <Search size={18} className="absolute left-3 top-2.5 text-muted-foreground" />
               <Input
                 placeholder="Search users..."
                 className="pl-10"
@@ -36,8 +36,7 @@ export default function UserManagementPage() {
               />
             </div>
             <Button variant="outline">
-              <Download size={16} className="mr-2" />
-              Export
+             
             </Button>
           </div>
 

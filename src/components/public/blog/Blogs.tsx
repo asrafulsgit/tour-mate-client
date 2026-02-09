@@ -27,7 +27,7 @@ const Blogs = () => {
               placeholder="Search articles..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 py-3 border border-primary/30"
+              className="pl-10 py-3 border"
             />
           </div>
         </div>
