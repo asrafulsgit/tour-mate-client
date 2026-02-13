@@ -1,8 +1,7 @@
-  
+import GoogleLogin from "@/components/auth/signup/GoogleLogin";
 import SignupForm from "@/components/auth/signup/SignupForm";
 import Logo from "@/components/shared/Logo";
-import Title from "@/components/shared/Title";
-import { Button } from "@/components/ui/button";
+import Title from "@/components/shared/Title"; 
 import { Card } from "@/components/ui/card";
 import { CheckCircle2 } from "lucide-react";
 import Link from "next/link";
@@ -40,14 +39,7 @@ const page = () => {
         </div>
 
         {/* Social Signup */}
-        <div>
-          <Button
-            variant="outline"
-            className="cursor-pointer w-full bg-transparent"
-          >
-            Google
-          </Button>
-        </div>
+        <GoogleLogin />
 
         {/* Sign In Link */}
         <p className="text-center text-muted-foreground text-sm">

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Inter, Poppins } from "next/font/google";
 import "./globals.css";
+import ReduxProvider from "@/redux/provider/inde";
+import { Toaster } from "@/components/ui/sonner";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -27,9 +29,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en"> 
+    <html lang="en">
       <body className={`${inter.variable} ${poppins.variable} antialiased`}>
-        {children}
+        <ReduxProvider>{children}</ReduxProvider>
+          <Toaster position="top-center" />
       </body>
     </html>
   );

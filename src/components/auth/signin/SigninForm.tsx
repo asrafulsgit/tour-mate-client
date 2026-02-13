@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Mail, Lock, User, Eye, EyeOff } from "lucide-react";
+import { Mail, Lock, User, Eye, EyeOff, Loader } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,6 +18,9 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { Label } from "@/components/ui/label";
+import { useLoginMutation } from "@/redux/features/auth";
+import { toast } from "sonner";
 
 const signinSchema = z.object({
   email: z
@@ -42,9 +45,16 @@ function SigninForm() {
     },
   });
 
-  const onSubmit = (values: SigninFormValues) => {
-    console.log("Signin values:", values);
-    router.push("/");
+  const [loginUser, { isLoading, error, data }] = useLoginMutation();
+  const onSubmit = async (values: SigninFormValues) => {
+    try {
+      await loginUser(values).unwrap();
+      toast.success("Signin successfull");
+      router.push("/");
+    } catch (error: any) {
+      console.log(error);
+      toast.error(error.data.message || "Something went wrorng!");
+    }
   };
 
   return (
@@ -56,9 +66,9 @@ function SigninForm() {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <label className="block text-sm font-medium text-foreground mb-2">
+              <Label className="block text-sm font-medium text-foreground">
                 Email Address
-              </label>
+              </Label>
               <FormControl>
                 <div className="relative">
                   <Mail
@@ -83,9 +93,9 @@ function SigninForm() {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <label className="block text-sm font-medium text-foreground mb-2">
+              <Label className="block text-sm font-medium text-foreground">
                 Password
-              </label>
+              </Label>
               <FormControl>
                 <div className="relative">
                   <Lock
@@ -139,8 +149,19 @@ function SigninForm() {
           </Link>
         </div>
         {/* Submit */}
-        <Button type="submit" className="cursor-pointer w-full py-2 sm:mt-6">
-          Sign In
+        <Button
+          disabled={isLoading}
+          type="submit"
+          className="cursor-pointer w-full py-2 sm:mt-6"
+        >
+          {isLoading ? (
+            <>
+              <Loader className="size-4 animate-spin" />
+              Sign In
+            </>
+          ) : (
+            `Sign In`
+          )}
         </Button>
       </form>
     </Form>

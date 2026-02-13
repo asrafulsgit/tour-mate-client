@@ -4,10 +4,10 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import  {z} from "zod";
-import { Mail, Lock, User, Eye, EyeOff } from "lucide-react";
+import { z } from "zod";
+import { Mail, Lock, User, Eye, EyeOff, Loader } from "lucide-react";
 
-import { Button } from "@/components/ui/button"; 
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Form,
@@ -18,6 +18,9 @@ import {
 } from "@/components/ui/form";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useRouter } from "next/navigation";
+import { useCreateUserMutation } from "@/redux/features/user";
+import { toast } from "sonner";
+import { Label } from "@/components/ui/label";
 
 const signupSchema = z
   .object({
@@ -52,28 +55,37 @@ function SignupForm() {
     },
   });
 
-  const onSubmit = (values: SignupFormValues) => {
-    console.log("Signup values:", values);
-    router.push("/auth/login");
+  const [createUser, { isLoading, error, data }] = useCreateUserMutation();
+
+  const onSubmit = async (values: SignupFormValues) => {
+    try {
+      await createUser(values).unwrap();
+      toast.success("Signup successfull");
+      router.push("/auth/login");
+    } catch (error: any) {
+      console.log(error);
+      toast.error(error.data.message || "Something went wrorng!");
+    }
   };
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 mb-1">
-        {/* Full Name */}
+        {/* Full Name */} 
         <FormField
           control={form.control}
           name="name"
           render={({ field }) => (
             <FormItem>
-              <label className="block text-sm font-medium text-foreground mb-2">
+              <Label className="block text-sm font-medium text-foreground">
                 Full Name
-              </label>
+              </Label>
               <FormControl>
                 <div className="relative">
                   <User
                     size={18}
-                    className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground p
+                    ointer-events-none"
                   />
                   <Input {...field} placeholder="John Doe" className="pl-10" />
                 </div>
@@ -89,9 +101,9 @@ function SignupForm() {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <label className="block text-sm font-medium text-foreground mb-2">
+              <Label className="block text-sm font-medium text-foreground">
                 Email Address
-              </label>
+              </Label>
               <FormControl>
                 <div className="relative">
                   <Mail
@@ -116,9 +128,9 @@ function SignupForm() {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <label className="block text-sm font-medium text-foreground mb-2">
+              <Label className="block text-sm font-medium text-foreground">
                 Password
-              </label>
+              </Label>
               <FormControl>
                 <div className="relative">
                   <Lock
@@ -151,9 +163,9 @@ function SignupForm() {
           name="confirmPassword"
           render={({ field }) => (
             <FormItem>
-              <label className="block text-sm font-medium text-foreground mb-2">
+              <Label className="block text-sm font-medium text-foreground">
                 Confirm Password
-              </label>
+              </Label>
               <FormControl>
                 <div className="relative">
                   <Lock
@@ -199,14 +211,14 @@ function SignupForm() {
               <span className="text-sm text-muted-foreground">
                 I agree to the{" "}
                 <Link
-                  href="/terms"
+                  href="/terms-of-service"
                   className="text-primary hover:text-primary/80 transition"
                 >
                   Terms of Service
                 </Link>{" "}
                 and{" "}
                 <Link
-                  href="/privacy"
+                  href="/privacy-policy"
                   className="text-primary hover:text-primary/80 transition"
                 >
                   Privacy Policy
@@ -217,9 +229,20 @@ function SignupForm() {
         />
 
         {/* Submit */}
-        <Button type="submit" className="cursor-pointer w-full py-2 sm:mt-6">
-          Create Account
-        </Button>  
+        <Button
+          type="submit"
+          disabled={isLoading}
+          className="cursor-pointer w-full py-2 sm:mt-1"
+        >
+          {isLoading ? (
+            <>
+              <Loader className="size-4 animate-spin" />
+              Create Account
+            </>
+          ) : (
+            `Create Account`
+          )}
+        </Button>
       </form>
     </Form>
   );
