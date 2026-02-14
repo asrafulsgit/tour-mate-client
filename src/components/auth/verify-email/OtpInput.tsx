@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { RotateCcw } from "lucide-react";
+import { Loader, RotateCcw } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -18,30 +18,60 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import { z } from "zod";
-import { Label } from "@/components/ui/label"; 
+import { Label } from "@/components/ui/label";
+import { useSendOtpMutation, useVerifyOtpMutation } from "@/redux/features/otp";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 const otpSchema = z.object({
-  code: z.string().length(6, "Verification code must be 6 digits"),
+  otp: z.string().length(6, "Verification code must be 6 digits"),
 });
 
 type OtpFormValues = z.infer<typeof otpSchema>;
 
-function OtpForm({ onFormSubmit,email }: { onFormSubmit: () => void,email : string }) {
-
+function OtpForm({
+  onFormSubmit,
+  email,
+}: {
+  onFormSubmit: () => void;
+  email: string;
+}) {
+  const router = useRouter();
   const form = useForm<OtpFormValues>({
     resolver: zodResolver(otpSchema),
     defaultValues: {
-      code: "",
+      otp: "",
     },
   });
 
-  const onSubmit = (values: OtpFormValues) => {
+  const [verifyOtp, { isLoading, error, data }] = useVerifyOtpMutation();
+
+  const onSubmit = async (values: OtpFormValues) => {
     const payload = {
       ...values,
       email,
     };
-    console.log("OTP:", payload);
-    onFormSubmit();
+    try {
+      await verifyOtp(payload).unwrap();
+      router.push("/auth/login");
+    } catch (error: any) {
+      console.log(error);
+      toast.error(error.data.message || "Failed to verify OTP");
+    }
+  };
+
+  const [sendOtp, { isLoading: resendLoading }] = useSendOtpMutation();
+
+  const handleResend = async () => {
+    form.reset({ otp: "" });
+    try {
+      await sendOtp({ email }).unwrap();
+      toast.success("Otp resend successfull");
+    } catch (error: any) {
+      console.log(error);
+      toast.error(error.data.message || "Failed to send OTP");
+    }
   };
 
   return (
@@ -50,7 +80,7 @@ function OtpForm({ onFormSubmit,email }: { onFormSubmit: () => void,email : stri
         {/* OTP Input */}
         <FormField
           control={form.control}
-          name="code"
+          name="otp"
           render={({ field }) => (
             <FormItem className="space-y-2">
               <Label>Verification Code</Label>
@@ -80,10 +110,17 @@ function OtpForm({ onFormSubmit,email }: { onFormSubmit: () => void,email : stri
         {/* Submit */}
         <Button
           type="submit"
-          className="w-full"
-          disabled={form.watch("code").length !== 6}
+          className={cn("", "w-full cursor-pointer")}
+          disabled={form.watch("otp").length !== 6 || isLoading}
         >
-          Verify Email
+          {isLoading ? (
+            <>
+              <Loader className="size-4 animate-spin" />
+              Verify Email
+            </>
+          ) : (
+            `Verify Email`
+          )}
         </Button>
 
         {/* Resend */}
@@ -95,11 +132,21 @@ function OtpForm({ onFormSubmit,email }: { onFormSubmit: () => void,email : stri
           <Button
             type="button"
             variant="outline"
-            className="w-full bg-transparent"
-            onClick={() => form.reset({ code: "" })}
+            className={cn("", "w-full bg-transparent cursor-pointer")}
+            onClick={handleResend}
+            disabled={resendLoading}
           >
-            <RotateCcw className="mr-2 h-4 w-4" />
-            Resend Code
+            {resendLoading ? (
+              <>
+                <Loader className="size-4 animate-spin" />
+                Resend Code
+              </>
+            ) : (
+              <>
+                <RotateCcw className="mr-2 h-4 w-4" />
+                Resend Code
+              </>
+            )}
           </Button>
         </div>
       </form>

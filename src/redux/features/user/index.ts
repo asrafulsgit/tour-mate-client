@@ -1,5 +1,9 @@
 import { baseApi } from "@/redux/api/baseApi";
-import { RegisterPayload, RegisterResponse } from "./user.types";
+import {
+  GetUserResponse,
+  RegisterPayload,
+  RegisterResponse,
+} from "./user.types";
 
 export const userApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -10,7 +14,14 @@ export const userApi = baseApi.injectEndpoints({
         body: payload,
       }),
     }),
+    getUser: builder.query<GetUserResponse, void>({
+      query: () => ({
+        url: "/user/me",
+        method: "GET",
+      }),
+      providesTags: ["User"],
+    }),
   }),
 });
 
-export const { useCreateUserMutation } = userApi;
+export const { useCreateUserMutation, useGetUserQuery } = userApi;

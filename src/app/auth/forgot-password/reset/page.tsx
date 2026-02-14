@@ -1,4 +1,5 @@
-"use client";
+import ResetPasswordForm from "@/components/auth/forgot-password/ResetPasswordForm";
+import BackButton from "@/components/shared/BackButton";
 import {
   Card,
   CardContent,
@@ -6,10 +7,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import BackButton from "@/components/shared/BackButton";
-import VerifyEmailForm from "@/components/auth/verify-email/VerifyEmailForm";
 
-function ForgotPassword() {
+const page = () => {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <main className="grow flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
@@ -19,22 +18,23 @@ function ForgotPassword() {
               <div className="flex gap-2 items-center">
                 <BackButton />
                 <CardTitle className="text-xl sm:text-2xl">
-                  Email Verification?
+                  Reset Your Password
                 </CardTitle>
               </div>
               <CardDescription>
-                Enter your email address and we'll send you a 6 digit code to
-                verify your email.
+                Create a new password for your account. Make sure it's strong
+                and unique.
               </CardDescription>
             </CardHeader>
 
             <CardContent>
-              <VerifyEmailForm />
+              <ResetPasswordForm />
             </CardContent>
           </Card>
         </div>
       </main>
     </div>
   );
-}
-export default ForgotPassword;
+};
+
+export default page;

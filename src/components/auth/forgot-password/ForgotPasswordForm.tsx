@@ -9,10 +9,14 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { CUSTOM_ERROR } from "@/constants/custom_error_code";
+import { useForgotPasswordMutation } from "@/redux/features/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Mail } from "lucide-react";
+import { Loader, Mail } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 
 const emailSchema = z.object({
@@ -28,17 +32,27 @@ const ForgotPasswordForm = ({
   onFormSubmit: () => void;
   onEmail: (email: string) => void;
 }) => {
+  const router = useRouter();
   const form = useForm<ForgotPasswordFormValues>({
     resolver: zodResolver(emailSchema),
     defaultValues: {
       email: "",
     },
   });
-
-  const onSubmit = (values: ForgotPasswordFormValues) => {
-    console.log("Signin values:", values);
-    onFormSubmit();
-    onEmail(values.email);
+  const [forgotPassword, { isLoading, error, data }] =
+    useForgotPasswordMutation();
+  const onSubmit = async (values: ForgotPasswordFormValues) => {
+    try {
+      await forgotPassword(values).unwrap();
+      onFormSubmit();
+      onEmail(values.email);
+    } catch (error: any) {
+      console.log(error);
+      if (error.data.code === CUSTOM_ERROR.USER_NOT_VERIFIED) {
+        return router.push("/auth/verify-email");
+      }
+      toast.error(error.data.message || "Something went wrorng!");
+    }
   };
   return (
     <Form {...form}>
@@ -70,8 +84,19 @@ const ForgotPasswordForm = ({
           )}
         />
 
-        <Button type="submit" className="cursor-pointer w-full">
-          Send Reset Link
+        <Button
+          type="submit"
+          disabled={isLoading}
+          className="cursor-pointer w-full"
+        >
+          {isLoading ? (
+            <>
+              <Loader className="size-4 animate-spin" />
+              Send Reset Link
+            </>
+          ) : (
+            `Send Reset Link`
+          )}
         </Button>
 
         <div className="text-center">

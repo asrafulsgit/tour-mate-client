@@ -1,5 +1,6 @@
   
 import SigninForm from "@/components/auth/signin/SigninForm";
+import GoogleLogin from "@/components/auth/signup/GoogleLogin";
 import Logo from "@/components/shared/Logo";
 import Title from "@/components/shared/Title";
 import { Button } from "@/components/ui/button";
@@ -39,14 +40,7 @@ const page = () => {
         </div>
 
         {/* Social Signup */}
-        <div>
-          <Button
-            variant="outline"
-            className="cursor-pointer w-full bg-transparent"
-          >
-            Google
-          </Button>
-        </div>
+         <GoogleLogin />
 
         {/* Sign up Link */}
         <p className="text-center text-muted-foreground text-sm">

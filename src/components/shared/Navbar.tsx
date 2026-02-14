@@ -6,7 +6,11 @@ import { Button } from "@/components/ui/button";
 import { Menu, X, LogOut } from "lucide-react";
 import Logo from "./Logo";
 import Title from "./Title";
-import { useParams, usePathname } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
+import { useGetUserQuery } from "@/redux/features/user";
+import { cn } from "@/lib/utils";
+import { useLogoutMutation } from "@/redux/features/auth";
+import { toast } from "sonner";
 
 export enum Role {
   USER = "USER",
@@ -126,18 +130,18 @@ const navItems: Item[] = [
   },
 ];
 
-interface HeaderProps {
-  isAuthenticated?: boolean;
-  userRole?: Role.USER | Role.GUIDE | Role.ADMIN | Role.SUPER_ADMIN;
-}
-
-function Navbar({ isAuthenticated = true, userRole = Role.ADMIN }: HeaderProps) {
+function Navbar() {
+  const router = useRouter();
+  const pathName = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const pathName = usePathname();
-
+  const { data, isLoading, isError } = useGetUserQuery();
+  const [logout, { isLoading: logoutLoading }] = useLogoutMutation();
+  const user = isError ? null : data?.data;
+  const isAuthenticated = !!user;
+  const userRole = user?.role;
   // Handle click outside to close dropdown
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -158,6 +162,16 @@ function Navbar({ isAuthenticated = true, userRole = Role.ADMIN }: HeaderProps) 
     };
   }, [profileMenuOpen]);
 
+  const handleLogout = async () => {
+    try {
+      await logout().unwrap();
+      toast.success("User logout successfull");
+      router.replace("/auth/login");
+    } catch (error: any) {
+      console.error("Logout failed", error);
+      toast.error(error.data.message);
+    }
+  }; 
   return (
     <>
       <header className="border-b border-border bg-background sticky top-0 z-60">
@@ -218,7 +232,7 @@ function Navbar({ isAuthenticated = true, userRole = Role.ADMIN }: HeaderProps) 
                   rounded-full hover:bg-muted transition"
                   >
                     <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-primary-foreground text-sm font-bold">
-                      {userRole.charAt(0).toUpperCase()}
+                      {userRole?.charAt(0).toUpperCase()}
                     </div>
                   </button>
 
@@ -231,21 +245,29 @@ function Navbar({ isAuthenticated = true, userRole = Role.ADMIN }: HeaderProps) 
                         </p>
                       </div>
                       <div className="flex flex-col py-2">
-                        {profileItems[userRole].map((item) => (
-                          <Link
-                            key={item.path}
-                            href={item.path}
-                            onClick={() => setProfileMenuOpen(false)}
-                            className="px-4 py-2 text-sm text-foreground hover:bg-muted transition flex items-center gap-2"
-                          >
-                            {item.name}
-                          </Link>
-                        ))}
+                        {userRole &&
+                          profileItems[userRole]?.map((item) => (
+                            <Link
+                              key={item.path}
+                              href={item.path}
+                              onClick={() => setProfileMenuOpen(false)}
+                              className="px-4 py-2 text-sm text-foreground hover:bg-muted transition flex items-center gap-2"
+                            >
+                              {item.name}
+                            </Link>
+                          ))}
                         <div className="border-t border-border mt-2 pt-2">
-                          <button className="w-full px-4 py-2 text-sm text-destructive hover:bg-muted transition flex items-center gap-2 justify-start">
+                          <Button
+                            variant={"link"}
+                            onClick={handleLogout}
+                            className={cn(
+                              "",
+                              "text-sm text-destructive hover:bg-muted cursor-pointer justify-start transition w-full hover:no-underline rounded-none",
+                            )}
+                          >
                             <LogOut size={16} />
                             Log Out
-                          </button>
+                          </Button>
                         </div>
                       </div>
                     </div>

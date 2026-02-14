@@ -9,11 +9,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useSendOtpMutation } from "@/redux/features/otp";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Mail } from "lucide-react";
+import { Loader, Mail } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import * as z from "zod";
 
 const emailSchema = z.object({
@@ -30,10 +32,16 @@ const VerifyEmailForm = () => {
       email: "",
     },
   });
+  const [sendOtp, { isLoading, error, data }] = useSendOtpMutation();
 
-  const onSubmit = (values: VerifyEmailFormValues) => {
-    console.log("values:", values);
-    router.push(`/auth/verify-email/verification?email=${values.email}`);
+  const onSubmit = async (values: VerifyEmailFormValues) => {
+    try {
+      await sendOtp(values).unwrap();
+      router.push(`/auth/verify-email/verification?email=${values.email}`);
+    } catch (error: any) {
+      console.log(error);
+      toast.error(error.data.message || "Failed to send OTP");
+    }
   };
   return (
     <Form {...form}>
@@ -65,10 +73,16 @@ const VerifyEmailForm = () => {
           )}
         />
 
-        <Button type="submit" className="cursor-pointer w-full">
-          Send Otp
+        <Button type="submit" disabled={isLoading} className="cursor-pointer w-full">
+          {isLoading ? (
+            <>
+              <Loader className="size-4 animate-spin" />
+              Send Otp
+            </>
+          ) : (
+            `Send Otp`
+          )}
         </Button>
-
         <div className="text-center">
           <Link
             href="/auth/login"

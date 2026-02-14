@@ -8,3 +8,29 @@ export interface RegisterResponse {
   email: string;
   password: string;
 }
+
+export type AuthProvider = {
+  provider: "Google" | "Creadentials";
+  providerId: string;
+};
+
+export type User = {
+  _id: string;
+  name: string;
+  email: string;
+  picture: string;
+  isActive: "ACTIVE" | "INACTIVE" | "BLOCKED";
+  isVerified: boolean;
+  auths: AuthProvider[];
+  role: "ADMIN" | "USER" | "GUIDE" | "SUPER_ADMIN";
+  createdAt: string;
+  updatedAt: string;
+  address?: string;
+  phone?: string; 
+};
+
+export type GetUserResponse = {
+  success: boolean;
+  message: string;
+  data: User;
+};
