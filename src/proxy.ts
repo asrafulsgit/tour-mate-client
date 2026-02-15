@@ -8,7 +8,8 @@ export async function proxy(request: NextRequest) {
   const isPrivateRoute =
     request.nextUrl.pathname.startsWith("/admin") ||
     request.nextUrl.pathname.startsWith("/user") ||
-    request.nextUrl.pathname.startsWith("/guide");
+    request.nextUrl.pathname.startsWith("/guide") ||
+    request.nextUrl.pathname.startsWith("/become-a-guide");
   const response = NextResponse.next();
   if (!accessToken && refreshToken) {
     try {
@@ -61,7 +62,7 @@ export async function proxy(request: NextRequest) {
     // Access token exists and is valid - allow access
     if (accessToken && isValidToken(accessToken)) {
       return NextResponse.next();
-    } 
+    }
   }
 }
 

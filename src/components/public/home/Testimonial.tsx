@@ -1,4 +1,5 @@
 import SectionHeader from "@/components/shared/SectionHeader";
+import Image from "next/image";
 
 const testimonials = [
   {
@@ -6,21 +7,21 @@ const testimonials = [
     rating: 5,
     review:
       "Best travel experience ever! Our guide was knowledgeable, friendly, and made us feel so welcome. Highly recommended!",
-    avatar: "👩",
+    avatar: "https://randomuser.me/api/portraits/women/44.jpg",
   },
   {
     name: "Ahmed Hassan",
     rating: 5,
     review:
       "TourMate connected us with an amazing local guide. The whole booking process was smooth and transparent.",
-    avatar: "👨",
+    avatar: "https://randomuser.me/api/portraits/men/32.jpg",
   },
   {
     name: "Emma Williams",
     rating: 5,
     review:
       "The attention to detail and customer service was outstanding. We cannot wait to book another tour!",
-    avatar: "👩",
+    avatar: "https://randomuser.me/api/portraits/women/68.jpg",
   },
 ];
 
@@ -39,12 +40,23 @@ const Testimonial = () => {
               className="bg-card border border-border rounded-lg p-6"
             >
               <div className="flex items-center mb-4">
-                <span className="text-3xl mr-3">{review.avatar}</span>
+                {/* Optimized Avatar */}
+                <div className="relative w-14 h-14 mr-3">
+                  <Image
+                    src={review.avatar}
+                    alt={review.name}
+                    fill
+                    sizes="56px"
+                    className="rounded-full object-cover"
+                  />
+                </div>
+
                 <div>
                   <p className="font-semibold text-foreground">{review.name}</p>
                   <div className="text-accent">{"★".repeat(review.rating)}</div>
                 </div>
               </div>
+
               <p className="text-muted-foreground italic">"{review.review}"</p>
             </div>
           ))}

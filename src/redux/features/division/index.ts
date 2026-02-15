@@ -1,5 +1,8 @@
 import { baseApi } from "@/redux/api/baseApi";
-import { GetDivisionsTourCountResponse } from "./division.types";
+import {
+  GetAllDivisionsResponse,
+  GetDivisionsTourCountResponse,
+} from "./division.types";
 
 export const divisionApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -13,7 +16,14 @@ export const divisionApi = baseApi.injectEndpoints({
       }),
       providesTags: ["Division"],
     }),
+    getAllDivisions: builder.query<GetAllDivisionsResponse, void>({
+      query: () => ({
+        url: "/division/all",
+        method: "GET",
+      }),
+      providesTags: ["Division"],
+    }),
   }),
 });
 
-export const {useGetDivisionsWithTourCountQuery} = divisionApi;
+export const { useGetDivisionsWithTourCountQuery, useGetAllDivisionsQuery } = divisionApi;

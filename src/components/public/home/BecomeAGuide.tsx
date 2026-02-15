@@ -16,22 +16,8 @@ const BecomeAGuide = () => {
             <Link href="/become-a-guide">Apply as a Guide</Link>
           </Button>
           <Button size="lg" variant="outline" asChild>
-            <Link href="/help-center">Learn More</Link>
+            <Link href="/about">Learn More</Link>
           </Button>
-        </div>
-        <div className="grid grid-cols-3 gap-4 mt-12 text-center">
-          <div>
-            <div className="text-xl sm:text-3xl font-bold text-primary mb-1 sm:mb-2">2,500+</div>
-            <p className="text-sm sm:text-base text-muted-foreground">Active Guides</p>
-          </div>
-          <div>
-            <div className="text-xl sm:text-3xl font-bold text-primary mb-1 sm:mb-2">$500K+</div>
-            <p className="text-sm sm:text-base text-muted-foreground">Earned by Guides</p>
-          </div>
-          <div>
-            <div className="text-xl sm:text-3xl font-bold text-primary mb-1 sm:mb-2">4.8★</div>
-            <p className="text-sm sm:text-base text-muted-foreground">Average Rating</p>
-          </div>
         </div>
       </div>
     </section>

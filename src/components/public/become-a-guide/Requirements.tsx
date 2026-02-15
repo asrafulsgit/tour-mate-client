@@ -12,7 +12,7 @@ const BecomeAGuideRequirements = () => {
             <h3 className="text-lg sm:text-xl font-semibold text-foreground mb-3 sm:mb-6">
               Basic Requirements
             </h3>
-            <ul className="space-y-4">
+            <ul className="space-y-1 sm:space-y-4">
               {[
                 "At least 18 years old",
                 "Valid government ID",
@@ -21,7 +21,7 @@ const BecomeAGuideRequirements = () => {
                 "Reliable and professional communication",
                 "Access to a smartphone",
               ].map((req, idx) => (
-                <li key={idx} className="text-sm sm:text-base flex items-start sm:gap-3">
+                <li key={idx} className="text-sm sm:text-base flex items-center gap-1 sm:gap-3">
                   <Check size={20} className="text-primary sm:mt-1 shrink-0" />
                   <span className="text-foreground">{req}</span>
                 </li>
@@ -33,7 +33,7 @@ const BecomeAGuideRequirements = () => {
             <h3 className="text-lg sm:text-xl font-semibold text-foreground mb-3 sm:mb-6">
               Ideal Qualities
             </h3>
-            <ul className="space-y-4">
+            <ul className="space-y-1 sm:space-y-4">
               {[
                 "Deep knowledge of your destination",
                 "Exceptional customer service skills",
@@ -42,7 +42,7 @@ const BecomeAGuideRequirements = () => {
                 "Responsive and punctual",
                 "Continuous learning mentality",
               ].map((qual, idx) => (
-                <li key={idx} className="text-sm sm:text-base flex items-start sm:gap-3">
+                <li key={idx} className="text-sm sm:text-base flex items-start gap-1 sm:gap-3">
                   <Check size={20} className="text-accent sm:mt-1 shrink-0" />
                   <span className="text-foreground">{qual}</span>
                 </li>
