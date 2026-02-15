@@ -13,3 +13,14 @@ export type GetDivisionsTourCountResponse = {
   message: string;
   data: Division[];
 };
+
+
+export type GetAllDivisionsResponse = {
+  success: boolean;
+  message: string;
+  data: Division[];
+  meta: {
+    total: number;
+  };
+};
+
