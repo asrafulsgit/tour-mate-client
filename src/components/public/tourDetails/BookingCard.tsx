@@ -3,20 +3,23 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Tour } from "@/mock/tours";
-import { Award } from "lucide-react";
+import { Tour } from "@/redux/features/tour/tour.types";
+import { Award, Minus, Plus } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
 const BookingCard = ({ tour }: { tour: Tour }) => {
   const [guests, setGuests] = useState(1);
- 
+
   return (
     <Card className="p-4 sm:p-6 gap-3 mb-4">
       <div className="">
         <p className="text-sm text-muted-foreground mb-1">Starting from</p>
         <div className="flex items-baseline gap-2">
-          <span className="text-4xl font-bold text-primary">${tour.price}</span>
+          <span className="text-xl sm:text-3xl font-bold text-primary">
+            <span className="text-base sm:text-xl font-extrabold mr-1">৳</span>
+            {tour.costFrom}
+          </span>
           <span className="text-sm text-muted-foreground">per person</span>
         </div>
       </div>
@@ -27,28 +30,29 @@ const BookingCard = ({ tour }: { tour: Tour }) => {
           Number of Guests
         </label>
         <div className="flex items-center gap-2">
-          <button
+          <Button
             onClick={() => guests > 1 && setGuests(guests - 1)}
-            className="px-3 py-2 border border-border rounded-md text-foreground hover:bg-muted"
-          >
-            −
-          </button>
+            variant="destructive"
+            disabled={guests === 1}>
+            <Minus size={15} />
+          </Button>
           <Input
             type="number"
             min="1"
-            max={tour.groupSize}
+            max={tour.maxGuest}
             value={guests}
             onChange={(e) =>
-              setGuests(Math.min(parseInt(e.target.value) || 1, tour.groupSize))
+              setGuests(Math.min(parseInt(e.target.value) || 1, tour.maxGuest))
             }
             className="text-center"
           />
-          <button
-            onClick={() => guests < tour.groupSize && setGuests(guests + 1)}
-            className="px-3 py-2 border border-border rounded-md text-foreground hover:bg-muted"
-          >
-            +
-          </button>
+          <Button
+            onClick={() => guests < tour.maxGuest && setGuests(guests + 1)}
+            variant="default"
+            disabled={guests === tour.maxGuest}
+            >
+            <Plus size={15} />
+          </Button>
         </div>
       </div>
 
@@ -57,7 +61,8 @@ const BookingCard = ({ tour }: { tour: Tour }) => {
         <div className="flex justify-between font-bold text-lg">
           <span>Total</span>
           <span className="text-primary">
-            ${tour.price * guests + Math.round(tour.price * guests * 0.05)}
+            $
+            {tour.costFrom * guests + Math.round(tour.costFrom * guests * 0.05)}
           </span>
         </div>
       </div>

@@ -2,9 +2,10 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Star, MapPin, Users, Clock } from "lucide-react";
+import { Star, MapPin, Users, Clock, Calendar } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Tour } from "@/mock/tours";
+import { Tour } from "@/redux/features/tour/tour.types";
+import { format } from "date-fns";
 
 interface TourCardProps {
   tour: Tour;
@@ -12,25 +13,25 @@ interface TourCardProps {
 
 export function TourCard({ tour }: TourCardProps) {
   return (
-    <Link href={`/tours/${tour.id}`}>
+    <Link href={`/tours/${tour._id}`}>
       <div className="bg-card rounded-lg overflow-hidden border border-border hover:shadow-lg hover:border-primary transition-all group cursor-pointer h-full flex flex-col">
         {/* Image Container */}
         <div className="relative w-full h-48 overflow-hidden bg-muted">
           <Image
-            src={tour.image || "/placeholder.svg"}
+            src={tour.images[0] || "/placeholder.svg"}
             alt={tour.title}
             fill
             className="object-cover group-hover:scale-105 transition-transform duration-300"
           />
           <Badge className="absolute top-3 right-3 bg-accent text-accent-foreground">
-            {tour.category}
+            {tour.tourType?.name}
           </Badge>
         </div>
 
         {/* Content */}
         <div className="p-4 flex flex-col grow">
           {/* Title */}
-          <h3 className="heading text-lg font-semibold text-foreground mb-2 line-clamp-2">
+          <h3 className="heading text-lg font-semibold text-foreground mb-2 line-clamp-1">
             {tour.title}
           </h3>
 
@@ -46,14 +47,14 @@ export function TourCard({ tour }: TourCardProps) {
           </div>
 
           {/* Details Grid */}
-          <div className="grid grid-cols-3 gap-2 mb-4 text-xs">
+          <div className="flex gap-3 mb-4 text-xs">
             <div className="flex items-center gap-1 text-muted-foreground">
-              <Clock size={14} />
-              <span>{tour.duration}</span>
+              <Calendar size={14} />
+              <span>{format(tour.startDate, "MMM d, yyyy")}</span>
             </div>
             <div className="flex items-center gap-1 text-muted-foreground">
               <Users size={14} />
-              <span>{tour.groupSize} people</span>
+              <span>Max {tour.maxGuest}</span>
             </div>
             <div className="flex items-center gap-1">
               <Star size={14} className="fill-accent text-accent" />
@@ -61,27 +62,30 @@ export function TourCard({ tour }: TourCardProps) {
             </div>
           </div>
 
-          {/* Guide */}
-          <div className="flex items-center gap-2 mb-4 pb-4 border-b border-border">
-            <div className="w-6 h-6 rounded-full bg-muted overflow-hidden">
-              <Image
-                src={tour.guide.avatar || "/placeholder.svg"}
-                alt={tour.guide.name}
-                width={24}
-                height={24}
-                className="w-full h-full object-cover"
-              />
+          {/* Included Items */}
+          <div className="mb-4 pb-4 border-b border-border">
+            <p className="text-xs text-muted-foreground mb-2">Includes:</p>
+            <div className="flex flex-wrap gap-1">
+              {tour.included.slice(0, 2).map((item, idx) => (
+                <Badge key={idx} variant="secondary" className="text-xs">
+                  {item}
+                </Badge>
+              ))}
+              {tour.included.length > 2 && (
+                <Badge variant="secondary" className="text-xs">
+                  +{tour.included.length - 2}
+                </Badge>
+              )}
             </div>
-            <span className="text-xs text-muted-foreground">
-              {tour.guide.name}
-            </span>
           </div>
 
-          {/* Price and Rating */}
+          {/* Price and Reviews */}
           <div className="flex justify-between items-center mt-auto">
             <div>
               <p className="text-xs text-muted-foreground">From</p>
-              <p className="text-xl font-bold text-primary">${tour.price}</p>
+              <p className="text-xl font-bold text-primary">
+                <span className="text-lg font-extrabold mr-1">৳</span>{tour.costFrom.toLocaleString()}
+              </p>
             </div>
             <div className="flex items-center gap-1">
               <span className="text-sm font-medium text-foreground">

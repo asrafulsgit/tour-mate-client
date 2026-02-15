@@ -1,38 +1,57 @@
+"use client";
+import ApiErrorPage from "@/components/shared/ApiErrorPage";
 import SectionHeader from "@/components/shared/SectionHeader";
+import { useGetDivisionsWithTourCountQuery } from "@/redux/features/division";
+import Image from "next/image";
 import Link from "next/link";
+import DivisionCardSkeleton from "./DivisionSectionSkeleton";
 
 const ExploreByDivision = () => {
   return (
     <section className="py-10 sm:py-15 bg-card border-y border-border">
       <div className="max-w-7xl mx-auto px-2 sm:px-4">
-        <SectionHeader title="Explore by Division" subTitle="Discover amazing experiences across Bangladesh"/>
-        <div className="mt-8 sm:mt-12 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
-          {[
-            { name: "Dhaka", tours: "45 tours", image: "🏙️" },
-            { name: "Chattogram", tours: "38 tours", image: "⛰️" },
-            { name: "Sylhet", tours: "32 tours", image: "🌿" },
-            { name: "Cox's Bazar", tours: "28 tours", image: "🏖️" },
-          ].map((division) => (
-            <Link
-              key={division.name}
-              href={`/tour?division=${division.name}`}
-              className="group relative overflow-hidden rounded-lg border border-border 
-              bg-background p-2 sm:p-6 hover:border-primary transition cursor-pointer  flex 
-              flex-col justify-end"
-            >
-              <div className="text-3xl sm:text-5xl mb-4 group-hover:scale-110 transition">
-                {division.image}
-              </div>
-              <h3 className="text-xl sm:text-2xl font-bold text-foreground mb-2">
-                {division.name}
-              </h3>
-              <p className="text-muted-foreground">{division.tours}</p>
-            </Link>
-          ))}
+        <SectionHeader
+          title="Explore by Division"
+          subTitle="Discover amazing experiences across Bangladesh"
+        />
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mt-8 sm:mt-12">
+          <Divisions />
         </div>
       </div>
     </section>
   );
+};
+
+const Divisions = () => {
+  const { data, isLoading, error } = useGetDivisionsWithTourCountQuery();
+  const divisions = data?.data;
+
+  if (isLoading) return <DivisionCardSkeleton />;
+  if (error) return <ApiErrorPage name="Divisions" />;
+  return divisions?.map((division) => (
+    <Link
+      key={division._id}
+      href={`/tours?division=${division.slug}`}
+      className="group relative overflow-hidden rounded-lg border border-border bg-background hover:border-primary transition cursor-pointer h-56"
+    >
+      {/* Thumbnail Image */}
+      <Image
+        src={division.thumbnail || "/placeholder.svg"}
+        alt={division.name}
+        fill
+        className="object-cover group-hover:scale-105 transition-transform duration-300"
+      />
+
+      {/* Gradient Overlay */}
+      <div className="absolute inset-0 bg-linear-to-t from-black/60 via-black/20 to-transparent" />
+
+      {/* Content */}
+      <div className="absolute inset-0 flex flex-col justify-end p-6">
+        <h3 className="text-2xl font-bold text-white mb-1">{division.name}</h3>
+      </div>
+    </Link>
+  ));
 };
 
 export default ExploreByDivision;

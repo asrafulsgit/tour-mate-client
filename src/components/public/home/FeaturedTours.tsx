@@ -1,12 +1,15 @@
+"use client";
 import SectionHeader from "@/components/shared/SectionHeader";
 import { TourCard } from "@/components/shared/TourCard";
 import { Button } from "@/components/ui/button";
 import { mockTours } from "@/mock/tours";
+import { useGetAllToursQuery } from "@/redux/features/tour";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
+import ToursSkeleton from "../tours/ToursSkeleton";
+import ApiErrorPage from "@/components/shared/ApiErrorPage";
 
 const FeaturedTours = () => {
-  const featuredTours = mockTours.slice(0, 6);
   return (
     <section className="py-10 sm:py-15">
       <div className="max-w-7xl mx-auto px-2 sm:px-4">
@@ -27,10 +30,8 @@ const FeaturedTours = () => {
           </Button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {featuredTours.map((tour) => (
-            <TourCard key={tour.id} tour={tour} />
-          ))}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-3 md:gap-6">
+          <Tours />
         </div>
 
         <div className="flex sm:hidden mt-8">
@@ -44,6 +45,15 @@ const FeaturedTours = () => {
       </div>
     </section>
   );
+};
+
+const Tours = () => {
+  const { data, isLoading, error } = useGetAllToursQuery({
+    limit: 6,
+  });
+  if (isLoading ) return <ToursSkeleton />;
+  if (error) return <ApiErrorPage name="Fetured tours" />;
+  return data?.data.map((tour) => <TourCard key={tour._id} tour={tour} />);
 };
 
 export default FeaturedTours;
