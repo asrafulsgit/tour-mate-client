@@ -1,8 +1,7 @@
 "use client";
 import SectionHeader from "@/components/shared/SectionHeader";
 import { TourCard } from "@/components/shared/TourCard";
-import { Button } from "@/components/ui/button";
-import { mockTours } from "@/mock/tours";
+import { Button } from "@/components/ui/button"; 
 import { useGetAllToursQuery } from "@/redux/features/tour";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";

@@ -3,14 +3,31 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, DollarSign, Star, X } from "lucide-react";
-import { categories } from "@/mock/tours";
 import { Slider } from "@/components/ui/slider";
+import { useSearchParams } from "next/navigation";
+import { useGetAllDivisionsQuery } from "@/redux/features/division";
+import { Combobox } from "@/components/shared/combobox";
+import { useGetTourTypesQuery } from "@/redux/features/tourType";
+import { Skeleton } from "@/components/ui/skeleton";
+import useQueryManager from "@/hooks/useQueryManager";
+import { cn } from "@/lib/utils";
 
 function FilterSection({
   onMobileFiltersClose,
 }: {
   onMobileFiltersClose: () => void;
 }) {
+  const { getQuery, setQuery, clearQuery } = useQueryManager();
+  const {
+    data,
+    isLoading: divisionsLoading,
+    error,
+  } = useGetAllDivisionsQuery();
+  const divisions = data?.data;
+  const { data: tourTypeData, isLoading: tourTypeLoading } =
+    useGetTourTypesQuery();
+  const tourTypes = tourTypeData?.data;
+
   return (
     <div className="bg-card rounded-lg border border-border p-6 sticky top-24">
       <div className="flex justify-between items-center mb-6">
@@ -35,8 +52,8 @@ function FilterSection({
           />
           <Input
             placeholder="Search tours..."
-            // value={searchQuery}
-            // onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => setQuery("search", e.target.value)}
+            value={getQuery("search") ?? ""}
             className="pl-10"
           />
         </div>
@@ -44,72 +61,70 @@ function FilterSection({
 
       {/* Categories */}
       <div className="mb-6">
-        <h3 className="text-sm font-semibold text-foreground mb-3">Category</h3>
-        <div className="space-y-2">
-          {categories.map((category) => (
-            <button
-              key={category}
-              // onClick={() => setSelectedCategory(category)}
-              className={`w-full text-left px-3 py-2 rounded-md text-sm transition ${
-                "selectedCategory" === category
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:bg-muted"
-              }`}
-            >
-              {category}
-            </button>
-          ))}
-        </div>
+        <h3 className="text-sm font-semibold text-foreground mb-3">Type</h3>
+        {tourTypeLoading ? (
+          <Skeleton className="h-10 w-full rounded-md" />
+        ) : (
+          <Combobox
+            options={
+              tourTypes?.map((type) => ({
+                value: type._id,
+                label: type.name,
+              })) ?? []
+            }
+            value={getQuery("type") as string}
+            onChange={(id) => setQuery("type", id)}
+            placeholder="Select type"
+            className="w-full"
+          />
+        )}
+      </div>
+      {/* {divisions } */}
+      <div className="mb-6">
+        <h3 className="text-sm font-semibold text-foreground mb-3">Division</h3>
+        {divisionsLoading ? (
+          <Skeleton className="h-10 w-full rounded-md" />
+        ) : (
+          <Combobox
+            options={
+              divisions?.map((division) => ({
+                value: division._id,
+                label: division.name,
+              })) ?? []
+            }
+            value={getQuery("division") as string}
+            onChange={(id) => setQuery("division", id)}
+            placeholder="Select Division"
+            className="w-full"
+          />
+        )}
       </div>
 
       {/* Price Range */}
-      <div className="mb-6">
+      {/* <div className="mb-6">
         <h3 className="text-sm font-semibold text-foreground mb-3">
-          <DollarSign size={16} className="inline mr-2" />
+          <span className="font-extrabold mr-1">৳</span>
           Price Range
         </h3>
         <Slider
-          // value={priceRange}
-          // onValueChange={setPriceRange}
+          value={priceRange}
+          onValueChange={setPriceRange}
           min={0}
           max={200}
           step={10}
           className="mb-3"
         />
         <div className="flex justify-between text-sm text-muted-foreground">
-          <span>${}</span>
-          <span>${}</span>
+          <span><span className="font-extrabold mr-1">৳</span>{}</span>
+          <span><span className="font-extrabold mr-1">৳</span>{}</span>
         </div>
-      </div>
-
-      {/* Minimum Rating */}
-      <div className="mb-6">
-        <h3 className="text-sm font-semibold text-foreground mb-3">
-          <Star size={16} className="inline mr-2" />
-          Minimum Rating
-        </h3>
-        <div className="space-y-2">
-          {[0, 3.5, 4, 4.5].map((rating) => (
-            <button
-              key={rating}
-              // onClick={() => setMinRating(rating)}
-              className={`w-full text-left px-3 py-2 rounded-md text-sm transition ${
-                0 === rating
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:bg-muted"
-              }`}
-            >
-              {rating === 0 ? "Any Rating" : `${rating}+ Stars`}
-            </button>
-          ))}
-        </div>
-      </div>
+      </div> */}
 
       {/* Reset Button */}
       <Button
         variant="outline"
-        className="w-full bg-transparent"
-        // onClick={resetFilters}
+        className={cn("", "w-full cursor-pointer bg-transparent")}
+        onClick={() => clearQuery()}
       >
         Reset Filters
       </Button>

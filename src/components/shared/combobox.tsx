@@ -26,7 +26,7 @@ interface ComboboxOption {
 
 interface ComboboxProps {
   options: ComboboxOption[];
-  value: string;
+  value?: string;
   onChange: (id: string) => void;
   placeholder?: string;
   className?: string;

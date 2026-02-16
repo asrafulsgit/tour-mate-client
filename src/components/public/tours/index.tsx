@@ -13,7 +13,7 @@ const Tours = () => {
         <div className="border-b border-border py-4">
           <SectionHeader
             title="Explore Tours"
-            subTitle="Discover {filteredTours.length} amazing experiences around the world"
+            subTitle="Discover amazing experiences around the world"
           />
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 py-4 sm:py-8">
