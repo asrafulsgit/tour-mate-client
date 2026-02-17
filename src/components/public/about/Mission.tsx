@@ -9,7 +9,7 @@ const AboutMission = () => {
                   Our Story
                 </h2>
                 <p className="text-base sm:text-lg text-muted-foreground mb-2 sm:mb-4 leading-relaxed">
-                  TourMate was founded in 2016 with a simple vision: to revolutionize the way people travel and experience new destinations.
+                  TourMate was founded in 2025 with a simple vision: to revolutionize the way people travel and experience new destinations.
                 </p>
                 <p className="text-base sm:text-lg text-muted-foreground mb-2 sm:mb-4 leading-relaxed">
                   We started as a small team of travel enthusiasts frustrated by impersonal tour experiences and inflated prices. We wanted to create a platform that would directly connect travelers with local guides—real people who could share authentic, personalized experiences.
@@ -20,19 +20,19 @@ const AboutMission = () => {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="flex flex-col items-center justify-center bg-primary/10 rounded-lg p-4 sm:p-8 text-center">
-                  <div className="text-2xl sm:text-4xl font-bold text-primary sm:mb-2">2016</div>
+                  <div className="text-2xl sm:text-4xl font-bold text-primary sm:mb-2">2025</div>
                   <p className="text-foreground font-medium">Founded</p>
                 </div>
                 <div className="flex flex-col items-center justify-center bg-accent/10 rounded-lg p-4 sm:p-8 text-center">
-                  <div className="text-2xl sm:text-4xl font-bold text-accent sm:mb-2">8+</div>
+                  <div className="text-2xl sm:text-4xl font-bold text-accent sm:mb-2">1+</div>
                   <p className="text-foreground font-medium">Years Operating</p>
                 </div>
                 <div className="flex flex-col items-center justify-center bg-primary/10 rounded-lg p-4 sm:p-8 text-center">
-                  <div className="text-2xl sm:text-4xl font-bold text-primary sm:mb-2">50K+</div>
+                  <div className="text-2xl sm:text-4xl font-bold text-primary sm:mb-2">1K+</div>
                   <p className="text-foreground font-medium">Travelers</p>
                 </div>
                 <div className="flex flex-col items-center justify-center bg-accent/10 rounded-lg p-4 sm:p-8 text-center">
-                  <div className="text-2xl sm:text-4xl font-bold text-accent sm:mb-2">2.5K+</div>
+                  <div className="text-2xl sm:text-4xl font-bold text-accent sm:mb-2">8+</div>
                   <p className="text-foreground font-medium">Guides</p>
                 </div>
               </div>

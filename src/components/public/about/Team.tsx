@@ -1,4 +1,31 @@
-import React from "react";
+import Image from "next/image";
+
+const teamMembers = [
+  {
+    id: 1,
+    name: "Md. Asraful",
+    role: "Founder & CEO",
+    image: "",
+  },
+  {
+    id: 2,
+    name: "Sarah Ahmed",
+    role: "Tour Operations Manager",
+    image: "",
+  },
+  {
+    id: 3,
+    name: "Mahmud Hasan",
+    role: "Senior Tour Guide",
+    image: "",
+  },
+  {
+    id: 4,
+    name: "Nusrat Jahan",
+    role: "Customer Success Manager",
+    image: "",
+  },
+];
 
 const AboutTeam = () => {
   return (
@@ -14,13 +41,30 @@ const AboutTeam = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          {["👨‍💼", "👩‍💼", "👨‍💼", "👩‍💼"].map((avatar, idx) => (
-            <div key={idx} className="text-center">
-              <div className="text-6xl mb-4 text-center">{avatar}</div>
-              <h3 className="text-lg font-semibold text-foreground mb-1">
-                Team Member
+          {teamMembers.map((member) => (
+            <div
+              key={member.id}
+              className="group bg-card rounded-2xl p-6 text-center shadow-sm transition-all duration-300"
+            >
+              <div className="relative w-28 h-28 mx-auto mb-4">
+                {member.image ? (
+                  <Image
+                    src={member.image}
+                    alt={member.name}
+                    fill
+                    className="rounded-full object-cover group-hover:scale-105 transition"
+                  />
+                ) : (
+                  <p className="font-bold bg-black/30  h-full w-full rounded-full"></p>
+                )}
+              </div>
+
+              <h3 className="text-lg font-semibold text-foreground">
+                {member.name}
               </h3>
-              <p className="text-muted-foreground">Founder & CEO</p>
+              <p className="text-sm text-muted-foreground mt-1">
+                {member.role}
+              </p>
             </div>
           ))}
         </div>

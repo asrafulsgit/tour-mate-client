@@ -17,7 +17,7 @@ const ContactInfo = () => {
         <CardContent className="text-center sm:space-y-2">
           <p className="text-muted-foreground">For general inquiries</p>
           <p className="text-primary hover:underline font-medium">
-            info@tourmate.com
+            sourob2356@gmail.com
           </p>
           <p className="text-muted-foreground text-sm">
             Response time: Within 24 hours
@@ -37,7 +37,7 @@ const ContactInfo = () => {
         <CardContent className="text-center sm:space-y-2">
           <p className="text-muted-foreground ">Available Mon-Fri 9AM-6PM</p>
           <p className="text-primary hover:underline font-medium">
-            +880 1234 567890
+            +880 1820286432
           </p>
           <p className="text-muted-foreground text-sm ">BDT timezone</p>
         </CardContent>
@@ -55,7 +55,7 @@ const ContactInfo = () => {
         <CardContent className="text-center sm:space-y-2">
           <p className="text-muted-foreground">Visit us at</p>
           <p className="text-foreground font-medium">Dhaka, Bangladesh</p>
-          <p className="text-muted-foreground text-sm">Servicing all of Asia</p>
+          <p className="text-muted-foreground text-sm">Servicing all Bangladesh</p>
         </CardContent>
       </Card>
     </div>

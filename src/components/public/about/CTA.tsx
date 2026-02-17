@@ -16,13 +16,13 @@ const AboutCTA = () => {
           <Button size="lg" asChild>
             <Link href="/tours">
               Explore Tours
-              <ArrowRight size={18} className="ml-2" />
+              <ArrowRight size={18} />
             </Link>
           </Button>
           <Button size="lg" variant="outline" asChild>
             <Link href="/become-a-guide">
               Become a Guide
-              <ArrowRight size={18} className="ml-2" />
+              <ArrowRight size={18}  />
             </Link>
           </Button>
         </div>
