@@ -1,23 +1,49 @@
+import ApiErrorPage from "@/components/shared/ApiErrorPage";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { blogPosts } from "@/mock/blogs";
-import { ArrowRight, Calendar, Search } from "lucide-react";
-import Link from "next/link";
-import { useState } from "react";
+import { useDebounce } from "@/hooks/useDebounce";
+import useQueryManager from "@/hooks/useQueryManager";
+import { cn } from "@/lib/utils";
+import { useGetBlogsQuery } from "@/redux/features/blog";
+import { Blog } from "@/redux/features/blog/blog.types";
+import { Search } from "lucide-react";
+import { memo, useMemo, useState } from "react";
+import BlogCard from "./BlogCard";
+import BlogCardSkeleton from "./BlogCardSkeleton";
+import AppPagination from "@/components/shared/Pagination";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { blogCategories } from "@/constants/blog_categories";
 
-const Blogs = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const filteredPosts = blogPosts.filter(
-    (post) =>
-      post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      post.excerpt.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
+const BlogsSection = memo(() => {
+  const { getQuery, setQuery, clearQuery } = useQueryManager();
+  const debouncedSearch = useDebounce(getQuery("search"), 500);
+  const currentPage = Number(getQuery("page")) || 1;
+  const { data, isLoading, error } = useGetBlogsQuery({
+    searchTerm: debouncedSearch ?? undefined,
+    type: getQuery("type") ?? undefined,
+    limit: Number(getQuery("limit")) || 2,
+    page: currentPage,
+  });
+
+  const blogs = useMemo(() => data?.data ?? [], [data?.data]);
+
+  const totalPages = data?.meta.totalPage || 1;
+  const safePage = Math.min(Math.max(currentPage, 1), totalPages);
+  const type = getQuery("type");
+
   return (
     <>
       {/* Search Section */}
       <section className="py-8">
-        <div className="max-w-4xl mx-auto px-2 sm:px-4 ">
-          <div className="relative">
+        <div className="max-w-4xl mx-auto px-2 sm:px-4 grid md:grid-cols-5 gap-2 items-center">
+          <div className="relative col-span-3">
             <Search
               size={20}
               className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
@@ -25,70 +51,97 @@ const Blogs = () => {
             <Input
               type="text"
               placeholder="Search articles..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              value={getQuery("search") || ""}
+              onChange={(e) => setQuery("search", e.target.value)}
               className="pl-10 py-3 border"
             />
           </div>
+          <Select
+            value={type ?? ""}  
+            onValueChange={(value) => setQuery("type", value)}
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Select type" />
+            </SelectTrigger>
+            <SelectContent >
+              <SelectGroup> 
+                {blogCategories.map((category) => (
+                  <SelectItem key={category} value={category}>
+                    {category}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+          <Button variant="outline" onClick={clearQuery}>
+            Reset Filters
+          </Button>
         </div>
       </section>
 
       {/* Blog Posts Grid */}
-      <section className="pb-8 sm:pb-16 sm:pt-6">
+      <section className="pb-8 sm:pb-16 md:pt-6">
         <div className="max-w-7xl mx-auto px-2 sm:px-4">
-          {filteredPosts.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8">
-              {filteredPosts.map((post) => (
-                <Link
-                  key={post.id}
-                  href={`/blog/${post.id}`}
-                  className="group hover:bg-primary/5 border border-border rounded-lg overflow-hidden 
-                  hover:border-primary transition"
-                >
-                  <div className="bg-muted p-6 text-4xl h-40 flex items-center justify-center group-hover:bg-muted/80 transition">
-                    {post.image}
-                  </div>
-                  <div className="p-3 sm:p-6">
-                    <div className="flex items-center gap-3 mb-3">
-                      <span className="text-xs font-medium bg-primary/10 text-primary px-3 py-1 rounded-full">
-                        {post.category}
-                      </span>
-                    </div>
-                    <h3 className="heading sm:text-lg font-semibold text-foreground mb-2 line-clamp-2 group-hover:text-primary transition">
-                      {post.title}
-                    </h3>
-                    <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
-                      {post.excerpt}
-                    </p>
-                    <div className="flex items-center justify-between text-xs text-muted-foreground">
-                      <div className="flex items-center gap-2">
-                        <Calendar size={14} />
-                        {new Date(post.date).toLocaleDateString()}
-                      </div>
-                      <span>{post.readTime}</span>
-                    </div>
-                    <div className="mt-4 flex items-center text-primary group-hover:translate-x-2 transition">
-                      Read More
-                      <ArrowRight size={16} className="ml-2" />
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-12">
-              <p className="text-lg text-muted-foreground mb-4">
-                No articles found matching your search.
-              </p>
-              <Button variant="outline" onClick={() => setSearchTerm("")}>
-                Clear Search
-              </Button>
-            </div>
-          )}
+          <Blogs blogs={blogs} isLoading={isLoading} error={error} />
         </div>
       </section>
+
+      <div className="mt-4 sm:mt-8">
+        <AppPagination
+          currentPage={safePage}
+          totalPages={totalPages}
+          onPageChange={(page) => setQuery("page", String(page))}
+        />
+      </div>
     </>
   );
-};
+});
 
-export default Blogs;
+interface BlogsProps {
+  blogs: Blog[];
+  isLoading: boolean;
+  error: any;
+}
+
+const Blogs = memo(({ blogs, isLoading, error }: BlogsProps) => {
+  const { clearQuery } = useQueryManager();
+  if (isLoading) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8">
+        <BlogCardSkeleton />
+      </div>
+    );
+  }
+
+  if (error) return <ApiErrorPage name="Blogs" />;
+
+  if (blogs.length === 0) {
+    return (
+      <div className="text-center py-16 w-full">
+        <p className="sm:text-lg text-muted-foreground mb-4">
+          No blogs match your filters
+        </p>
+        <Button
+          onClick={clearQuery}
+          variant="outline"
+          className={cn("", "cursor-pointer")}
+        >
+          Clear Filters
+        </Button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {blogs.map((blog) => (
+        <BlogCard key={blog._id} blog={blog} />
+      ))}
+    </div>
+  );
+});
+
+Blogs.displayName = "Blogs";
+BlogsSection.displayName = "BlogsSection";
+
+export default BlogsSection;
