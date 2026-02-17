@@ -32,7 +32,7 @@ const Divisions = () => {
   return divisions?.map((division) => (
     <Link
       key={division._id}
-      href={`/tours?division=${division.slug}`}
+      href={`/tours?division=${division._id}`}
       className="group relative overflow-hidden rounded-lg border border-border bg-background hover:border-primary transition cursor-pointer h-56"
     >
       {/* Thumbnail Image */}

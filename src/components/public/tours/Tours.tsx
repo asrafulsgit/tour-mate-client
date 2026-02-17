@@ -8,41 +8,59 @@ import useQueryManager from "@/hooks/useQueryManager";
 import { useDebounce } from "@/hooks/useDebounce";
 import { Tour } from "@/redux/features/tour/tour.types";
 import { cn } from "@/lib/utils";
+import AppPagination from "@/components/shared/Pagination";
+import { Filter } from "lucide-react";
 
 interface ToursSectionProps {
   onMobileFiltersOpen: () => void;
+  isMobileOpen: boolean;
 }
 
-const ToursSection = memo(({ onMobileFiltersOpen }: ToursSectionProps) => {
-  const { getQuery } = useQueryManager();
-  const debouncedSearch = useDebounce(getQuery("search"), 500);
+const ToursSection = memo(
+  ({ onMobileFiltersOpen, isMobileOpen }: ToursSectionProps) => {
+    const { getQuery, setQuery } = useQueryManager();
+    const debouncedSearch = useDebounce(getQuery("search"), 500);
+    const currentPage = Number(getQuery("page")) || 1;
+    const { data, isLoading, error } = useGetAllToursQuery({
+      searchTerm: debouncedSearch ?? undefined,
+      division: getQuery("division") ?? undefined,
+      tourType: getQuery("type") ?? undefined,
+      limit: Number(getQuery("limit")) || 2,
+      page: currentPage,
+    });
 
-  const { data, isLoading, error } = useGetAllToursQuery({
-    searchTerm: debouncedSearch ?? undefined,
-    division: getQuery("division") ?? undefined,
-    tourType: getQuery("type") ?? undefined,
-  });
+    const tours = useMemo(() => data?.data ?? [], [data?.data]);
 
-  const tours = useMemo(() => data?.data ?? [], [data?.data]);
+    const totalPages = data?.meta.totalPage || 1;
+    const safePage = Math.min(Math.max(currentPage, 1), totalPages);
 
-  return (
-    <div className="lg:col-span-3">
-      {/* Mobile Filter Button */}
-      <div className="lg:hidden mb-6">
-        <Button
-          variant="outline"
-          className="w-full bg-transparent"
-          onClick={onMobileFiltersOpen}
-        >
-          Show Filters
-        </Button>
-      </div>
-
-      {/* Tours */}
-      <Tours tours={tours} isLoading={isLoading} error={error} />
-    </div>
-  );
-});
+    return (
+      <> 
+        {/* Mobile Filter Button */}
+        {isMobileOpen && (
+          <div className="md:hidden mb-6">
+            <Button
+              variant="outline"
+              className="w-full bg-transparent"
+              onClick={onMobileFiltersOpen}
+            >
+            <Filter size={12} />  Show Filters
+            </Button>
+          </div>
+        )}
+        {/* Tours */}
+        <Tours tours={tours} isLoading={isLoading} error={error} />
+        <div className="mt-4 sm:mt-8">
+          <AppPagination
+            currentPage={safePage}
+            totalPages={totalPages}
+            onPageChange={(page) => setQuery("page", String(page))}
+          />
+        </div>
+      </>
+    );
+  },
+);
 
 interface ToursProps {
   tours: Tour[];
@@ -54,7 +72,7 @@ const Tours = memo(({ tours, isLoading, error }: ToursProps) => {
   const { clearQuery } = useQueryManager();
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <ToursSkeleton />
       </div>
     );
@@ -64,7 +82,7 @@ const Tours = memo(({ tours, isLoading, error }: ToursProps) => {
 
   if (tours.length === 0) {
     return (
-      <div className="text-center py-16">
+      <div className="text-center py-16 w-full">
         <p className="sm:text-lg text-muted-foreground mb-4">
           No tours match your filters
         </p>
@@ -80,7 +98,7 @@ const Tours = memo(({ tours, isLoading, error }: ToursProps) => {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       {tours.map((tour) => (
         <TourCard key={tour._id} tour={tour} />
       ))}

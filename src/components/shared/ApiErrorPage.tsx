@@ -10,10 +10,10 @@ const ApiErrorPage = ({ name }: { name: string }) => {
   return (
     <div className="grow flex items-center justify-center">
       <div className="text-center">
-        <h1 className="text-2xl font-bold text-foreground mb-4">
+        <h1 className="text-destructive sm:text-2xl font-bold mb-4">
           Failed to fetch {name}
         </h1>
-        <Button onClick={handleBack} asChild>
+        <Button onClick={handleBack}>
           Go Back
         </Button>
       </div>

@@ -9,16 +9,16 @@ const Tours = () => {
 
   return (
     <>
-      <div className="max-w-7xl mx-auto px-4">
+      <main className="grow max-w-7xl px-2 sm:px-4">
         <div className="border-b border-border py-4">
           <SectionHeader
             title="Explore Tours"
             subTitle="Discover amazing experiences around the world"
           />
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 py-4 sm:py-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 py-4 sm:py-8 w-full">
           <div
-            className={`lg:col-span-1 ${mobileFiltersOpen ? "block" : "hidden lg:block"}`}
+            className={`md:col-span-1 ${mobileFiltersOpen ? "block" : "hidden md:block"}`}
           >
             <FilterSection
               onMobileFiltersClose={() =>
@@ -26,11 +26,16 @@ const Tours = () => {
               }
             />
           </div>
-          <ToursSection
-            onMobileFiltersOpen={() => setMobileFiltersOpen(!mobileFiltersOpen)}
-          />
+          <div className="md:col-span-3 w-full">
+            <ToursSection
+              onMobileFiltersOpen={() =>
+                setMobileFiltersOpen(!mobileFiltersOpen)
+              }
+              isMobileOpen={!mobileFiltersOpen}
+            />
+          </div>
         </div>
-      </div>
+      </main>
     </>
   );
 };

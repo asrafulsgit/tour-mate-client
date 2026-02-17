@@ -1,14 +1,39 @@
 "use client";
+import { Combobox } from "@/components/shared/combobox";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useGetAllDivisionsQuery } from "@/redux/features/division";
+import { useGetTourTypesQuery } from "@/redux/features/tourType";
 import { Calendar, MapPin, Search, Users } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
 const Hero = () => {
-  const [location, setLocation] = useState("");
-  const [date, setDate] = useState("");
-  const [guests, setGuests] = useState("1");
+  const [search, setSearch] = useState("");
+  const [division, setDivision] = useState("");
+  const [type, setType] = useState("");
+
+  const {
+    data,
+    isLoading: divisionsLoading,
+    error,
+  } = useGetAllDivisionsQuery();
+  const divisions = data?.data;
+  const { data: tourTypeData, isLoading: tourTypeLoading } =
+    useGetTourTypesQuery();
+  const tourTypes = tourTypeData?.data;
+
+  const queryObject: Record<string, string> = {
+    search: search.trim(),
+    division,
+    type,
+  };
+
+  const queryString = new URLSearchParams(
+    Object.entries(queryObject).filter(([_, value]) => value),
+  ).toString();
   return (
     <section className="relative pt-10 md:pt-30 md:pb-30 bg-linear-to-b from-primary/10 to-background">
       <div className="max-w-7xl mx-auto px-2 sm:px-4">
@@ -25,69 +50,79 @@ const Hero = () => {
         {/* Search Form */}
         <div className="max-w-4xl mx-auto bg-card rounded-lg border border-border p-6 shadow-lg">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {/* Location */}
+            {/* search */}
             <div className="relative">
-              <label className="block text-sm font-medium text-foreground mb-2">
-                Location
-              </label>
+              <Label className="block text-sm font-medium text-foreground mb-2">
+                Search
+              </Label>
               <div className="relative">
                 <MapPin
                   size={18}
                   className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
                 />
                 <Input
-                  placeholder="Where to?"
-                  value={location}
-                  onChange={(e) => setLocation(e.target.value)}
+                  placeholder="search tours"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
                   className="pl-10"
                 />
               </div>
             </div>
 
-            {/* Date */}
+            {/* division */}
             <div className="relative">
-              <label className="block text-sm font-medium text-foreground mb-2">
-                Date
-              </label>
+              <Label className="block text-sm font-medium text-foreground mb-2">
+                Division
+              </Label>
               <div className="relative">
-                <Calendar
-                  size={18}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
-                />
-                <Input
-                  type="date"
-                  value={date}
-                  onChange={(e) => setDate(e.target.value)}
-                  className="pl-10"
-                />
+                {divisionsLoading ? (
+                  <Skeleton className="h-8 w-full rounded-md" />
+                ) : (
+                  <Combobox
+                    options={
+                      divisions?.map((division) => ({
+                        value: division._id,
+                        label: division.name,
+                      })) ?? []
+                    }
+                    value={division}
+                    onChange={setDivision}
+                    placeholder="Select division"
+                    className="w-full"
+                  />
+                )}
               </div>
             </div>
 
-            {/* Guests */}
+            {/* type */}
             <div className="relative">
-              <label className="block text-sm font-medium text-foreground mb-2">
-                Guests
-              </label>
+              <Label className="block text-sm font-medium text-foreground mb-2">
+                Type
+              </Label>
               <div className="relative">
-                <Users
-                  size={18}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
-                />
-                <Input
-                  type="number"
-                  min="1"
-                  max="20"
-                  value={guests}
-                  onChange={(e) => setGuests(e.target.value)}
-                  className="pl-10"
-                />
+                {tourTypeLoading ? (
+                  <Skeleton className="h-8 w-full rounded-md" />
+                ) : (
+                  <Combobox
+                    options={
+                      tourTypes?.map((type) => ({
+                        value: type._id,
+                        label: type.name,
+                      })) ?? []
+                    }
+                    value={type}
+                    onChange={setType}
+                    placeholder="Select type"
+                    className="w-full"
+                  />
+                )}
               </div>
             </div>
 
             {/* Search Button */}
             <div className="flex items-end">
               <Button className="w-full" asChild>
-                <Link href="/tours">
+                <Link href={`/tours${queryString ? `?${queryString}` : ""}`}>
                   <Search size={18} className="mr-2" />
                   Search
                 </Link>
