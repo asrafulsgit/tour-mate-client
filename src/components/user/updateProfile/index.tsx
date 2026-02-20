@@ -1,33 +1,86 @@
 "use client";
-import BackButton from "@/components/shared/BackButton";
+
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { User, Mail, Phone, Save, MapPin, Loader } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { MOCK_USERS, User as IUser } from "@/mock/users";
-import { CheckCircle2, Mail, Phone, Save, User } from "lucide-react";
-import React, { useState } from "react";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 
-const UpdateProfilePage = () => {
-  const [formData, setFormData] = useState({
-    name: "Sarah Johnson",
-    phone: "+1-555-0100",
-    bio: "Travel enthusiast and adventure seeker. Love exploring new cultures and meeting people from around the world.",
+import BackButton from "@/components/shared/BackButton";
+import ApiErrorPage from "@/components/shared/ApiErrorPage";
+import { useGetUserQuery, useUpdateUserMutation } from "@/redux/features/user";
+import { useEffect } from "react";
+import ProfileUpateSkeleton from "./ProfileUpdateSkeletonForm";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+
+const profileSchema = z.object({
+  name: z.string().min(2, "Full name must be at least 2 characters"),
+  phone: z.string().optional(),
+  address: z.string().optional(),
+  bio: z.string().max(300, "Bio cannot exceed 300 characters").optional(),
+});
+
+type ProfileFormValues = z.infer<typeof profileSchema>;
+
+function EditProfileForm() {
+  const router = useRouter();
+  const form = useForm<ProfileFormValues>({
+    resolver: zodResolver(profileSchema),
+    defaultValues: {
+      name: "",
+      phone: "",
+      address: "",
+      bio: "",
+    },
   });
-  const user: IUser = MOCK_USERS[0];
-  const [isSaving, setIsSaving] = useState(false);
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
 
-  const handleSave = async () => {
-    setIsSaving(true);
-    setTimeout(() => {
-      setIsSaving(false);
-      alert("Profile updated successfully!");
-    }, 1000);
+  const { data, isLoading, isError } = useGetUserQuery();
+  const [updateUser, { isLoading: updateUserLoading }] =
+    useUpdateUserMutation();
+
+  const user = data?.data;
+  useEffect(() => {
+    if (user) {
+      form.reset({
+        name: user.name || "",
+        phone: user.phone || "",
+        address: user.address || "",
+        bio: "",
+      });
+    }
+  }, [user]);
+  if (isLoading) return <ProfileUpateSkeleton />;
+  if (isError) return <ApiErrorPage name="Profile edit" />;
+  const onSubmit = async (values: ProfileFormValues) => {
+    if (!user?._id) return toast.error("User Id is not found");
+    try {
+      await updateUser({
+        id: user?._id,
+        data: values,
+      }).unwrap();
+      toast.success("User updated successfully!");
+      router.push("/user/profile");
+    } catch (error: any) {
+      console.error(error.data.message);
+      toast.error("User profile update failed");
+    }
+  };
+  const handleReset = () => {
+    form.reset();
+    router.back();
   };
   return (
     <section className="py-4 sm:py-8">
@@ -40,79 +93,134 @@ const UpdateProfilePage = () => {
             </h3>
           </div>
 
-          {/* Full Name */}
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-2">
-              <User size={16} className="inline mr-2" />
-              Full Name
-            </label>
-            <Input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              className="w-full"
-            />
-          </div>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              {/* Full Name */}
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      <User size={16} className="inline" />
+                      Full Name
+                    </FormLabel>
+                    <FormControl>
+                      <Input {...field} placeholder="Enter your full name" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-          {/* Email (Locked) */}
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-2">
-              <Mail size={16} className="inline mr-2" />
-              Email (Cannot be changed)
-            </label>
-            <Input
-              type="email"
-              value={user?.email || ""}
-              disabled
-              className="w-full bg-muted"
-            />
-          </div>
+              {/* Email (Disabled) */}
+              <FormItem>
+                <FormLabel>
+                  <Mail size={16} className="inline" />
+                  Email (Cannot be changed)
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    value={user?.email || ""}
+                    disabled
+                    className="bg-muted"
+                  />
+                </FormControl>
+              </FormItem>
 
-          {/* Phone */}
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-2">
-              <Phone size={16} className="inline mr-2" />
-              Phone Number
-            </label>
-            <Input
-              type="tel"
-              name="phone"
-              value={formData.phone}
-              onChange={handleChange}
-              className="w-full"
-            />
-          </div>
+              {/* Phone */}
+              <FormField
+                control={form.control}
+                name="phone"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      <Phone size={16} className="inline" />
+                      Phone Number
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        type="tel"
+                        {...field}
+                        placeholder="Enter phone number"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              {/* address */}
+              <FormField
+                control={form.control}
+                name="address"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      <MapPin size={16} className="inline" />
+                      Address
+                    </FormLabel>
+                    <FormControl>
+                      <Input {...field} placeholder="Enter your address" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-          {/* Bio */}
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-2">
-              Bio
-            </label>
-            <textarea
-              name="bio"
-              value={formData.bio}
-              onChange={handleChange}
-              rows={4}
-              className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-              placeholder="Tell us about yourself..."
-            />
-          </div>
+              {/* Bio */}
+              {/* <FormField
+                control={form.control}
+                name="bio"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Bio</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        rows={4}
+                        {...field}
+                        placeholder="Tell us about yourself..."
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              /> */}
 
-          {/* Buttons */}
-          <div className="flex gap-3">
-            <Button variant="outline" className="flex-1">
-              Cancel
-            </Button>
-            <Button onClick={handleSave} disabled={isSaving} className="flex-1">
-              <Save size={16} className="mr-2" />
-              {isSaving ? "Saving..." : "Save Changes"}
-            </Button>
-          </div>
+              {/* Buttons */}
+              <div className="flex gap-3">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="flex-1"
+                  onClick={handleReset}
+                >
+                  Cancel
+                </Button>
+
+                <Button
+                  type="submit"
+                  disabled={updateUserLoading}
+                  className={"flex-1 cursor-pointer"}
+                >
+                  {isLoading ? (
+                    <>
+                      <Loader className="size-4 animate-spin" />
+                      Save Changes
+                    </>
+                  ) : (
+                    <>
+                      <Save size={16} className="mr-2" />
+                      Save Changes
+                    </>
+                  )}
+                </Button>
+              </div>
+            </form>
+          </Form>
         </Card>
       </div>
     </section>
   );
-};
+}
 
-export default UpdateProfilePage;
+export default EditProfileForm;

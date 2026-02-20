@@ -3,20 +3,67 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Camera, CheckCircle2 } from "lucide-react";
+import { Camera, CheckCircle2, Loader } from "lucide-react";
 import { MOCK_USERS, User as IUser } from "@/mock/users";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import UserHeader from "../UserHeader";
+import { useGetUserQuery, useUpdateUserMutation } from "@/redux/features/user";
+import UserProfileSkeleton from "./ProfileSkeleton";
+import ApiErrorPage from "@/components/shared/ApiErrorPage";
+import { format } from "date-fns";
+import { Role } from "@/components/shared/Navbar";
+import { cn } from "@/lib/utils";
+import Image from "next/image";
+import { z } from "zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
 
-export default function ProfilePage() {
-  const [formData, setFormData] = useState({
-    name: "Sarah Johnson",
-    phone: "+1-555-0100",
-    bio: "Travel enthusiast and adventure seeker. Love exploring new cultures and meeting people from around the world.",
+export const profileSchema = z.object({
+  picture: z
+    .instanceof(File, { message: "Image is required" })
+    .refine((file) => file.size <= 1 * 1024 * 1024, {
+      message: "Max file size is 1MB",
+    })
+    .refine((file) => file.type.startsWith("image/"), {
+      message: "Only image files are allowed",
+    }),
+});
+
+export type ProfileFormValues = z.infer<typeof profileSchema>;
+
+function ProfilePage() {
+  const form = useForm<ProfileFormValues>({
+    resolver: zodResolver(profileSchema),
   });
-  const user: IUser = MOCK_USERS[0];
 
+  const { data, isLoading, isError } = useGetUserQuery();
+  const [updateUser, { isLoading: updatePictureLoading }] =
+    useUpdateUserMutation();
+  const user = data?.data;
+  if (isLoading) return <UserProfileSkeleton />;
+  if (isError) return <ApiErrorPage name="User profile" />;
+  const onSubmit = async (data: ProfileFormValues) => { 
+    if (!user?._id) return toast.error("User Id is not found");
+    try {
+      const formData = new FormData();
+      formData.append("image", data.picture);
+      await updateUser({
+        id: user?._id,
+        data: formData,
+      }).unwrap();
+    } catch (error: any) {
+      console.error(error.data.message);
+    }
+  };
   return (
     <main className="grow">
       {/* Profile Header */}
@@ -30,31 +77,72 @@ export default function ProfilePage() {
         <div className="max-w-4xl mx-auto px-2 sm:px-4 space-y-4">
           <div className="lg:col-span-1">
             <Card className="p-6 text-center gap-0">
-              <div className="relative w-32 h-32 mx-auto mb-4">
-                <img
-                  src={user?.avatar || "https://via.placeholder.com/150"}
-                  alt={user?.name}
-                  className="w-full h-full rounded-full object-cover border-4 border-primary/20"
+              <Form {...form}>
+                <FormField
+                  control={form.control}
+                  name="picture"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <div className="relative w-32 h-32 mx-auto">
+                          <Image
+                            src={user?.picture || "/placeholder.png"}
+                            alt="Preview"
+                            fill
+                            sizes="128px"
+                            className="rounded-full object-cover border-4 border-primary/20"
+                          />
+                          <label className="absolute bottom-0 right-0 bg-primary text-primary-foreground p-2 rounded-full cursor-pointer hover:bg-primary/90 transition">
+                            {updatePictureLoading ? <Loader className="size-4 animate-spin" /> : <Camera size={16} />}
+                            <input
+                              type="file"
+                              accept="image/*"
+                              className="hidden"
+                              onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (file) {
+                                  field.onChange(file);
+                                  form.handleSubmit(onSubmit)();
+                                }
+                              }}
+                            />
+                          </label>
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-                <button className="absolute bottom-0 right-0 bg-primary text-primary-foreground p-2 rounded-full hover:bg-primary/90 transition">
-                  <Camera size={16} />
-                </button>
-              </div>
+              </Form>
               <h2 className="text-xl font-bold text-foreground mb-1">
                 {user?.name}
               </h2>
               <div className="flex items-center justify-center gap-2 mb-4">
-                <Badge variant="secondary">Member</Badge>
-                <Badge className="bg-green-100 text-green-800">
-                  <CheckCircle2 size={14} className="mr-1" />
-                  Verified
+                <Badge
+                  variant={
+                    user?.role === Role.USER
+                      ? "default"
+                      : user?.role === "GUIDE"
+                        ? "secondary"
+                        : "destructive"
+                  }
+                >
+                  {user?.role}
+                </Badge>
+                <Badge variant={user?.isVerified ? "secondary" : "destructive"}>
+                  <CheckCircle2 size={14} />
+                  {user?.isVerified ? "Verified" : "Unverified"}
                 </Badge>
               </div>
               <p className="text-sm text-muted-foreground mb-4">
-                Member since {user?.joinDate}
+                Member since{" "}
+                {user?.createdAt &&
+                  format(new Date(user.createdAt), "dd MMM yyyy")}
               </p>
               <Link href="/user/profile/update">
-                <Button variant="default">Edit Profile</Button>
+                <Button variant="default" className={cn("", "cursor-pointer")}>
+                  Edit Profile
+                </Button>
               </Link>
             </Card>
           </div>
@@ -67,7 +155,7 @@ export default function ProfilePage() {
                 {/* Full Name */}
                 <div className="space-y-1.5">
                   <Label>Full Name</Label>
-                  <p className="text-foreground sm:text-lg">{formData.name}</p>
+                  <p className="text-foreground sm:text-lg">{user?.name}</p>
                 </div>
 
                 {/* Email */}
@@ -82,28 +170,15 @@ export default function ProfilePage() {
                 {/* Phone */}
                 <div className="space-y-1.5">
                   <Label>Phone Number</Label>
-                  <p className="text-foreground sm:text-lg">{formData.phone}</p>
+                  <p className="text-foreground sm:text-lg">{user?.phone}</p>
                 </div>
 
                 {/* Bio */}
                 <div className="space-y-1.5">
                   <Label>Bio</Label>
-                  <p className="text-foreground text-base leading-relaxed">
-                    {formData.bio}
-                  </p>
-                </div>
-
-                {/* Danger Zone */}
-                <div className="pt-6 border-t border-border">
-                  <h4 className="font-semibold text-foreground mb-4">
-                    Danger Zone
-                  </h4>
-                  <Button
-                    variant="destructive"
-                    className="w-full justify-start"
-                  >
-                    Delete Account
-                  </Button>
+                  {/* <p className="text-foreground text-base leading-relaxed">
+                    {user?.bio}
+                  </p> */}
                 </div>
               </div>
             </Card>
@@ -113,3 +188,4 @@ export default function ProfilePage() {
     </main>
   );
 }
+export default ProfilePage;
