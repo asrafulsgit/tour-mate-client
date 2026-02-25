@@ -1,175 +1,195 @@
 "use client";
+import {
+  GuideApplicationFormValues,
+  guideApplicationSchema,
+} from "@/components/public/become-a-guide/ApplicationForm";
+import { Combobox } from "@/components/shared/combobox";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { mockDivisions } from "@/mock/divisions";
-import { AlertCircle, Upload } from "lucide-react";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
+import { useGetAllDivisionsQuery } from "@/redux/features/division";
+import { useApplyGuideMutation } from "@/redux/features/guide";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader, Upload } from "lucide-react";
 import Link from "next/link";
-import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
-const ApplicationForm = () => {
-  const [formData, setFormData] = useState({
-    division: "",
-    experience: "",
-    nidPhoto: null as File | null,
+const ApplicationForm = ({
+  onHandleStatus,
+}: {
+  onHandleStatus: () => void;
+}) => {
+  const form = useForm<GuideApplicationFormValues>({
+    resolver: zodResolver(guideApplicationSchema),
+    defaultValues: {
+      divisionId: "",
+      images: [],
+    },
   });
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >,
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setFormData((prev) => ({ ...prev, nidPhoto: file }));
+  const {
+    data,
+    isLoading: divisionsLoading,
+    error,
+  } = useGetAllDivisionsQuery();
+  const divisions = data?.data;
+
+  const [applyGuide, { isLoading }] = useApplyGuideMutation();
+  const onSubmit = async (data: GuideApplicationFormValues) => {
+    try {
+      const formData = new FormData();
+      formData.append("divisionId", data.divisionId);
+      data.images.forEach((file) => formData.append("images", file));
+      await applyGuide(formData).unwrap();
+      onHandleStatus();
+      toast.success("Application Submitted");
+    } catch (err: any) {
+      console.log("Failed to apply:", err.data || err.message);
+      toast.error(err.data.message || "Something went wrong!");
     }
   };
 
-  const validateForm = () => {
-    const newErrors: Record<string, string> = {};
-
-    if (!formData.division) {
-      newErrors.division = "Please select a division";
-    }
-    if (!formData.experience || formData.experience.length < 20) {
-      newErrors.experience =
-        "Please provide at least 20 characters describing your experience";
-    }
-    if (!formData.nidPhoto) {
-      newErrors.nidPhoto = "Please upload your NID photo";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!validateForm()) {
-      return;
-    }
-
-    setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
-    }, 1500);
-  };
   return (
     <Card className="p-4 sm:p-8 gap-3 sm:gap-6">
       <h2 className="text-xl font-bold text-foreground">
         Guide Application Form
       </h2>
-      <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
-        {/* Division Selection */}
-        <div>
-          <label className="block text-sm font-medium text-foreground mb-2">
-            Select Division <span className="text-red-600">*</span>
-          </label>
-          <select
-            name="division"
-            value={formData.division}
-            onChange={handleChange}
-            className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary ${
-              errors.division ? "border-red-500" : "border-border"
-            }`}
-          >
-            <option value="">Choose a division...</option>
-            {mockDivisions.map((div) => (
-              <option key={div.id} value={div.name}>
-                {div.name}, {div.country}
-              </option>
-            ))}
-          </select>
-          {errors.division && (
-            <p className="text-sm text-red-600 mt-1 flex items-center gap-1">
-              <AlertCircle size={14} />
-              {errors.division}
-            </p>
-          )}
-        </div>
 
-        {/* NID Photo Upload */}
-        <div>
-          <label className="block text-sm font-medium text-foreground mb-2">
-            Upload NID Photo <span className="text-red-600">*</span>
-          </label>
-          <div
-            className={`border-2 border-dashed rounded-lg p-8 text-center transition cursor-pointer ${
-              errors.nidPhoto
-                ? "border-red-500 bg-red-50"
-                : "border-border hover:border-primary"
-            }`}
-          >
-            <input
-              type="file"
-              onChange={handleFileChange}
-              accept="image/*"
-              className="hidden"
-              id="nid-upload"
-            />
-            <label htmlFor="nid-upload" className="cursor-pointer block">
-              <Upload
-                size={32}
-                className="mx-auto mb-2 text-muted-foreground"
-              />
-              <p className="font-medium text-foreground mb-1">
-                Click to upload NID photo
-              </p>
-              <p className="text-xs text-muted-foreground">
-                PNG, JPG up to 5MB
-              </p>
-              {formData.nidPhoto && (
-                <p className="text-sm text-green-600 font-medium mt-2">
-                  ✓ {formData.nidPhoto.name}
-                </p>
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-4 sm:space-y-6"
+        >
+          {/* Division */}
+          {divisionsLoading ? (
+            <div className="space-y-2">
+              <Skeleton className="h-4 w-32" />
+              <Skeleton className="h-10 w-full rounded-md" />{" "}
+            </div>
+          ) : (
+            <FormField
+              control={form.control}
+              name="divisionId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Select Division</FormLabel>
+                  <FormControl>
+                    <Combobox
+                      options={
+                        divisions?.map((division) => ({
+                          value: division._id,
+                          label: division.name,
+                        })) ?? []
+                      }
+                      value={field.value}
+                      onChange={field.onChange}
+                      placeholder="Select Division"
+                      className="w-full"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
               )}
-            </label>
-          </div>
-          {errors.nidPhoto && (
-            <p className="text-sm text-red-600 mt-1 flex items-center gap-1">
-              <AlertCircle size={14} />
-              {errors.nidPhoto}
-            </p>
-          )}
-        </div>
-
-        {/* Agreement */}
-        <div className="bg-muted p-4 rounded-lg">
-          <div className="flex gap-3">
-            <input
-              type="checkbox"
-              id="agreement"
-              required
-              className="w-4 h-4 mt-1 shrink-0"
             />
-            <label htmlFor="agreement" className="text-sm text-foreground">
-              I agree to TourMate's Guide Terms and Conditions.
-            </label>
-          </div>
-        </div>
+          )}
 
-        {/* Submit Button */}
-        <div className="flex gap-3 sm:pt-4">
-          <Button type="submit" disabled={isSubmitting} className="flex-1">
-            {isSubmitting ? "Submitting..." : "Submit Application"}
-          </Button>
-          <Link href="/dashboard" className="flex-1">
+          {/* NID Front Upload */}
+          <FormField
+            control={form.control}
+            name="images"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  Upload NID Front & Back{" "}
+                  <span className="text-red-600">*</span>
+                </FormLabel>
+                <FormControl>
+                  <div className="flex flex-col gap-4">
+                    {[0, 1].map((index) => (
+                      <div
+                        key={index}
+                        className="border-2 border-dashed rounded-lg p-4 sm:p-8 text-center hover:border-primary transition"
+                      >
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          id={`nid-upload-${index}`}
+                          onChange={(e) => {
+                            const files = Array.from(field.value || []);
+                            files[index] = e.target.files?.[0];
+                            field.onChange(files);
+                          }}
+                        />
+                        <label
+                          htmlFor={`nid-upload-${index}`}
+                          className="cursor-pointer block"
+                        >
+                          <Upload
+                            size={32}
+                            className="mx-auto mb-2 text-muted-foreground"
+                          />
+                          <p className="font-medium mb-1">
+                            Click to upload{" "}
+                            {index === 0 ? "NID Front" : "NID Back"}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            PNG, JPG up to 5MB
+                          </p>
+                          {field.value?.[index] && (
+                            <p className="text-sm text-green-600 mt-2">
+                              ✓ {field.value[index].name}
+                            </p>
+                          )}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* Buttons */}
+          <div className="flex gap-3 sm:pt-4">
             <Button
-              type="button"
-              variant="outline"
-              className="w-full bg-transparent"
+              type="submit"
+              disabled={isLoading}
+              className={cn("", "flex-1 cursor-pointer")}
             >
-              Cancel
+              {isLoading ? (
+                <>
+                  <Loader className="size-4 animate-spin" />
+                  Submit Application
+                </>
+              ) : (
+                `Submit Application`
+              )}
             </Button>
-          </Link>
-        </div>
-      </form>
+
+            <Link href="/" className="flex-1">
+              <Button
+                type="button"
+                variant="outline"
+                className={cn("", "w-full cursor-pointer")}
+              >
+                Cancel
+              </Button>
+            </Link>
+          </div>
+        </form>
+      </Form>
     </Card>
   );
 };

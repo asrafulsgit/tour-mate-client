@@ -2,7 +2,13 @@
 import { useRouter } from "next/navigation";
 import { Button } from "../ui/button";
 
-const ApiErrorPage = ({ name }: { name: string }) => {
+const ApiErrorPage = ({
+  name,
+  isButton = true,
+}: {
+  name: string;
+  isButton?: boolean;
+}) => {
   const router = useRouter();
   const handleBack = () => {
     router.back();
@@ -13,9 +19,7 @@ const ApiErrorPage = ({ name }: { name: string }) => {
         <h1 className="text-destructive sm:text-2xl font-bold mb-4">
           Failed to fetch {name}
         </h1>
-        <Button onClick={handleBack}>
-          Go Back
-        </Button>
+        {isButton && <Button onClick={handleBack}>Go Back</Button>}
       </div>
     </div>
   );

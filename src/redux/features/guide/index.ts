@@ -1,5 +1,8 @@
 import { baseApi } from "@/redux/api/baseApi";
-import { GuideApplicationResponse } from "./guide.types";
+import {
+  GetGuideApplicationsResponse,
+  GuideApplicationResponse,
+} from "./guide.types";
 
 export const guideApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -9,8 +12,16 @@ export const guideApi = baseApi.injectEndpoints({
         method: "POST",
         body: formData,
       }),
+      invalidatesTags :["GuideApplication"]
+    }),
+    getGuideApplications: builder.query<GetGuideApplicationsResponse, void>({
+      query: () => ({
+        url: "/guide/applications",
+        method: "GET"
+      }), 
+      providesTags: ["GuideApplication"],
     }),
   }),
 });
 
-export const { useApplyGuideMutation } = guideApi;
+export const { useApplyGuideMutation,useGetGuideApplicationsQuery } = guideApi;

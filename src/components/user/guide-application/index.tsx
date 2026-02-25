@@ -1,19 +1,24 @@
 "use client";
 import { useState } from "react";
-import { mockGuideApplications } from "@/mock/guide-applications";
 import UserHeader from "../UserHeader";
 import SuccessMessage from "./SuccessMessage";
 import ApplicationForm from "./ApplicationForm";
 import ApplicationDetails from "./ApplicationDetails";
 import NotFoundApplication from "./NotFoundApplication";
+import { useGetGuideApplicationsQuery } from "@/redux/features/guide";
+import GuideApplicationSectionSkeleton from "./GuideApplicationSkeleton";
 
 export default function GuideApplicationPage() {
   const [activeTab, setActiveTab] = useState<"status" | "new">("status");
-  const [submitSuccess, setSubmitSuccess] = useState(false); 
-  const userApplication = mockGuideApplications.find(
-    (app) => app.userId === "user",
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const { data, isLoading } = useGetGuideApplicationsQuery();
+  const guideApplications = data?.data;
+  const hasActiveApplication = guideApplications?.some((a) =>
+    ["PENDING", "APPROVED"].includes(a.status),
   );
-
+  const handleStatus = () => {
+    setActiveTab("status");
+  };
   return (
     <main className="grow">
       {/* Header */}
@@ -24,50 +29,61 @@ export default function GuideApplicationPage() {
 
       {/* Content */}
       <section className="pb-8">
-        <div className="max-w-4xl mx-auto px-2 sm:px-4">
-          {/* Tabs */}
-          <div className="flex gap-4 mb-4 sm:mb-8 border-b border-border">
-            <button
-              onClick={() => setActiveTab("status")}
-              className={`px-4 py-3 font-medium transition border-b-2 ${
-                activeTab === "status"
-                  ? "border-primary text-primary"
-                  : "border-transparent text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              Status
-            </button>
-            {!userApplication && (
+        {isLoading ? (
+          <GuideApplicationSectionSkeleton />
+        ) : (
+          <div className="max-w-4xl mx-auto px-2 sm:px-4">
+            {/* Tabs */}
+            <div className="flex gap-4 mb-4 sm:mb-6 border-b border-border">
               <button
-                onClick={() => setActiveTab("new")}
+                onClick={() => setActiveTab("status")}
                 className={`px-4 py-3 font-medium transition border-b-2 ${
-                  activeTab === "new"
+                  activeTab === "status"
                     ? "border-primary text-primary"
                     : "border-transparent text-muted-foreground hover:text-foreground"
                 }`}
               >
-                Application
+                Status
               </button>
-            )}
-          </div>
-
-          {/* Success Message */}
-          {submitSuccess && <SuccessMessage />}
-
-          {/* Application Status */}
-          {activeTab === "status" && (
-            <div>
-              {userApplication ? (
-                <ApplicationDetails userApplication={userApplication} />
-              ) : (
-                <NotFoundApplication />
+              {!hasActiveApplication && (
+                <button
+                  onClick={() => setActiveTab("new")}
+                  className={`px-4 py-3 font-medium transition border-b-2 ${
+                    activeTab === "new"
+                      ? "border-primary text-primary"
+                      : "border-transparent text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  Application
+                </button>
               )}
             </div>
-          )}
 
-          {/* New Application Form */}
-          {activeTab === "new" && !userApplication && <ApplicationForm />}
-        </div>
+            {/* Success Message */}
+            {submitSuccess && <SuccessMessage />}
+
+            {/* Application Status */}
+            {activeTab === "status" && (
+              <>
+                {guideApplications?.length === 0 && <NotFoundApplication />}
+                {guideApplications && (
+                  <div className="space-y-4">
+                    {guideApplications?.map((application) => (
+                      <ApplicationDetails
+                        key={application._id}
+                        userApplication={application}
+                      />
+                    ))}
+                  </div>
+                )}
+              </>
+            )}
+            {/* New Application Form */}
+            {activeTab === "new" && (
+              <ApplicationForm onHandleStatus={handleStatus} />
+            )}
+          </div>
+        )}
       </section>
     </main>
   );
