@@ -25,7 +25,7 @@ const ToursSection = memo(
       searchTerm: debouncedSearch ?? undefined,
       division: getQuery("division") ?? undefined,
       tourType: getQuery("type") ?? undefined,
-      limit: Number(getQuery("limit")) || 2,
+      limit: Number(getQuery("limit")) || 6,
       page: currentPage,
     });
 
@@ -53,7 +53,7 @@ const ToursSection = memo(
         <div className="mt-4 sm:mt-8">
           <AppPagination
             currentPage={safePage}
-            totalPages={totalPages}
+            totalPages={totalPages} 
             onPageChange={(page) => setQuery("page", String(page))}
           />
         </div>

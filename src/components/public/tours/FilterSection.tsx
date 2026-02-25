@@ -37,7 +37,7 @@ function FilterSection({
     useGetTourTypesQuery();
   const tourTypes = tourTypeData?.data;
 
-  const limit = getQuery("limit") || 2;
+  const limit = getQuery("limit") || 6;
 
   return (
     <Card className="py-4 sm:py-4 sticky top-18 gap-0">
@@ -125,9 +125,9 @@ function FilterSection({
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
-                <SelectItem value="2">2</SelectItem>
-                <SelectItem value="4">4</SelectItem>
                 <SelectItem value="6">6</SelectItem>
+                <SelectItem value="10">10</SelectItem>
+                <SelectItem value="20">20</SelectItem>
               </SelectGroup>
             </SelectContent>
           </Select>
