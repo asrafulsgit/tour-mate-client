@@ -3,14 +3,36 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { CUSTOM_ERROR } from "@/constants/custom_error_code";
+import { cn } from "@/lib/utils";
+import { useCreateBookingMutation } from "@/redux/features/booking";
 import { Tour } from "@/redux/features/tour/tour.types";
-import { Award, Minus, Plus } from "lucide-react";
-import Link from "next/link";
+import { Award, Loader, Minus, Plus } from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
 
 const BookingCard = ({ tour }: { tour: Tour }) => {
+  const router = useRouter();
+  const tourId = useParams().id as string;
   const [guests, setGuests] = useState(1);
-
+  const [createBooking, { isLoading }] = useCreateBookingMutation();
+  const handleBooking = async () => {
+    try {
+      const res = await createBooking({
+        tour: tourId,
+        guests: guests,
+      }).unwrap();
+      window.location.href = res.data.paymentUrl;
+    } catch (error: any) {
+      console.error(error);
+      if (error.data.code === CUSTOM_ERROR.TOKEN_NOT_FOUND) {
+        router.push("/auth/login");
+        return;
+      }
+      toast.error(error.data.message || "Booking failed");
+    }
+  };
   return (
     <Card className="p-4 sm:p-6 gap-3 mb-4">
       <div className="">
@@ -33,7 +55,8 @@ const BookingCard = ({ tour }: { tour: Tour }) => {
           <Button
             onClick={() => guests > 1 && setGuests(guests - 1)}
             variant="destructive"
-            disabled={guests === 1}>
+            disabled={guests === 1}
+          >
             <Minus size={15} />
           </Button>
           <Input
@@ -50,7 +73,7 @@ const BookingCard = ({ tour }: { tour: Tour }) => {
             onClick={() => guests < tour.maxGuest && setGuests(guests + 1)}
             variant="default"
             disabled={guests === tour.maxGuest}
-            >
+          >
             <Plus size={15} />
           </Button>
         </div>
@@ -61,18 +84,25 @@ const BookingCard = ({ tour }: { tour: Tour }) => {
         <div className="flex justify-between font-bold text-lg">
           <span>Total</span>
           <span className="text-primary">
-            $
-            {tour.costFrom * guests + Math.round(tour.costFrom * guests * 0.05)}
+            ${Math.round(tour.costFrom * guests)}
           </span>
         </div>
       </div>
 
       {/* CTA Buttons */}
-      <Button className="w-full mb-2" asChild>
-        <Link href="/checkout">Book Now</Link>
-      </Button>
-      <Button variant="outline" className="w-full bg-transparent">
-        Contact Guide
+      <Button
+        className={cn("", "w-full mb-2 cursor-pointer")}
+        disabled={isLoading}
+        onClick={handleBooking}
+      >
+        {isLoading ? (
+          <>
+            <Loader className="size-4 animate-spin" />
+            Book Now
+          </>
+        ) : (
+          `Book Now`
+        )}
       </Button>
 
       {/* Info */}

@@ -22,7 +22,7 @@ const FeaturedTours = () => {
             asChild
             className="hidden sm:flex bg-transparent"
           >
-            <Link href="/tour">
+            <Link href="/tours">
               View All Tours
               <ArrowRight size={18} className="ml-1.5" />
             </Link>
@@ -35,7 +35,7 @@ const FeaturedTours = () => {
 
         <div className="flex sm:hidden mt-8">
           <Button variant="outline" className="w-full bg-transparent" asChild>
-            <Link href="/tour">
+            <Link href="/tours">
               View All Tours
               <ArrowRight size={18} className="ml-1.5" />
             </Link>

@@ -7,6 +7,7 @@ import StatsCardsSkeleton from "./StatsSkeleton";
 const UserStats = () => {
   const { data, isLoading } = useGetUserBookingStatsQuery();
   const stats = data?.data;
+  console.log(stats)
   if (isLoading) return <StatsCardsSkeleton />;
 
   return (

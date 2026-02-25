@@ -1,10 +1,13 @@
+"use client";
 import UserHeader from "../UserHeader";
-import { mockUserBookings } from "@/mock/tours";
 import { Button } from "@/components/ui/button";
-import Link from "next/link"; 
+import Link from "next/link";
 import BookingsTable from "./BookingsTable";
+import { useGetMyBookingsQuery } from "@/redux/features/booking";
 
 const MyBookings = () => {
+  const { data, isLoading, error } = useGetMyBookingsQuery();
+
   return (
     <main className="grow">
       <UserHeader
@@ -13,16 +16,11 @@ const MyBookings = () => {
       />
       <div className="max-w-7xl mx-auto px-2 sm:px-4 py-4 sm:py-8">
         <div className="space-y-4">
-          {mockUserBookings.length > 0 ? ( 
-              <BookingsTable bookings={mockUserBookings} /> 
-          ) : (
-            <div className="text-center py-12">
-              <p className="text-muted-foreground mb-4">No bookings yet</p>
-              <Button asChild>
-                <Link href="/tours">Browse Tours</Link>
-              </Button>
-            </div>
-          )}
+          <BookingsTable
+            bookings={data?.data || []}
+            isLoading={isLoading}
+            error={error}
+          />
         </div>
       </div>
     </main>

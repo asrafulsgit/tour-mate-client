@@ -48,3 +48,16 @@ export type UpdateUserPayload = {
     image?: File;
   } | FormData;
 };
+
+export type UserBookingStats = {
+  totalBooking: number;
+  pendingBooking: number;
+  confirmBooking: number;
+  totalSpent: number;
+};
+
+export type GetUserBookingStatsResponse = {
+  success: boolean;
+  message: string;
+  data: UserBookingStats;
+};
