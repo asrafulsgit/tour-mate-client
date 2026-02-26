@@ -18,7 +18,7 @@ function BookingManagementPage() {
       />
 
       <section className="sm:pt-4 pb-8">
-        <div className="max-w-7xl mx-auto px-4 space-y-6">
+        <div className="max-w-7xl mx-auto px-2 sm:px-4 space-y-6">
           {/* Filters */}
           <div className="flex gap-3">
             <div className="relative flex-1">
