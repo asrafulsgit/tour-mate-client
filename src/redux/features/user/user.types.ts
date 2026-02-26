@@ -14,12 +14,14 @@ export type AuthProvider = {
   providerId: string;
 };
 
+export type UserStatus = "ACTIVE" | "INACTIVE" | "BLOCKED";
+
 export type User = {
   _id: string;
   name: string;
   email: string;
   picture: string;
-  isActive: "ACTIVE" | "INACTIVE" | "BLOCKED";
+  isActive: UserStatus;
   isVerified: boolean;
   auths: AuthProvider[];
   role: "ADMIN" | "USER" | "GUIDE" | "SUPER_ADMIN";
@@ -37,16 +39,18 @@ export type GetUserResponse = {
 
 export type UpdateUserPayload = {
   id: string;
-  data: {
-    name?: string;
-    picture?: string;
-    isActive?: "ACTIVE" | "INACTIVE" | "BLOCKED";
-    isVerified?: boolean;
-    role?: "ADMIN" | "USER" | "GUIDE" | "SUPER_ADMIN";
-    address?: string;
-    phone?: string;
-    image?: File;
-  } | FormData;
+  data:
+    | {
+        name?: string;
+        picture?: string;
+        isActive?: "ACTIVE" | "INACTIVE" | "BLOCKED";
+        isVerified?: boolean;
+        role?: "ADMIN" | "USER" | "GUIDE" | "SUPER_ADMIN";
+        address?: string;
+        phone?: string;
+        image?: File;
+      }
+    | FormData;
 };
 
 export type UserBookingStats = {
@@ -60,4 +64,24 @@ export type GetUserBookingStatsResponse = {
   success: boolean;
   message: string;
   data: UserBookingStats;
+};
+
+export type GetAllUsersResponse = {
+  success: boolean;
+  message: string;
+  data: User[];
+  meta: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPage: number;
+  };
+};
+export type GetAllUsersParams = {
+  page?: number;
+  limit?: number;
+  searchTerm?: string;
+  isVerified?: boolean;
+  role?: string;
+  isActive?: string;
 };

@@ -1,9 +1,11 @@
 import { Badge } from "@/components/ui/badge"; 
-import { AdminUser } from "@/mock/users";
-import { Shield} from "lucide-react";
+import { User } from "@/redux/features/user/user.types";
+import { format } from "date-fns";
+import { Shield } from "lucide-react";
 import Image from "next/image";
 
-const UserProfileModel = ({ user }: { user: AdminUser }) => {
+const UserProfileModel = ({ user }: { user: User }) => {
+  
   return (
     <div className="-mx-4 max-h-[60vh] overflow-y-auto p-1 sm:p-6 space-y-4 sm:space-y-6">
       {/* Profile Header */}
@@ -16,7 +18,7 @@ const UserProfileModel = ({ user }: { user: AdminUser }) => {
           alt={user.name}
           width={80}
           height={80}
-          className="w-16 sm:w-20 h-16 sm:h-20 rounded-full object-cover"
+          className="w-16 sm:w-20 h-16 sm:h-20 bg-gray-400 rounded-full object-cover"
         />
         <div>
           <h2
@@ -56,45 +58,20 @@ const UserProfileModel = ({ user }: { user: AdminUser }) => {
           <p className="text-xs text-muted-foreground sm:mb-1">Email</p>
           <p className="text-foreground font-medium">{user.email}</p>
         </div>
-        <div>
+        {user.phone && <div>
           <p className="text-xs text-muted-foreground sm:mb-1">Phone</p>
           <p className="text-foreground font-medium">{user.phone}</p>
-        </div>
-        <div>
+        </div>}
+        {user.address && <div>
           <p className="text-xs text-muted-foreground sm:mb-1">Address</p>
           <p className="text-foreground font-medium">{user.address}</p>
-        </div>
+        </div>}
         <div>
           <p className="text-xs text-muted-foreground mb-1">Role</p>
           <p className="text-foreground font-medium">{user.role}</p>
         </div>
       </div>
-
-      {/* Account Statistics */}
-      <div
-        className="grid grid-cols-3 gap-2 sm:gap-4 
-           py-4 bg-muted rounded-lg p-3 sm:p-4"
-      >
-        <div className="text-center">
-          <p className="text-2xl font-bold text-primary">
-            {user.totalBookings}
-          </p>
-          <p className="text-xs text-muted-foreground mt-1">Total Bookings</p>
-        </div>
-        <div className="text-center">
-          <p className="text-2xl font-bold text-green-600">
-            {user.confirmedTours}
-          </p>
-          <p className="text-xs text-muted-foreground mt-1">Confirmed Tours</p>
-        </div>
-        <div className="text-center">
-          <p className="text-2xl font-bold text-orange-600">
-            ${user.pendingPayments}
-          </p>
-          <p className="text-xs text-muted-foreground mt-1">Pending Payments</p>
-        </div>
-      </div>
-
+ 
       {/* Authentication Methods */}
       <div>
         <p className="text-sm font-semibold text-foreground mb-3">
@@ -124,16 +101,8 @@ const UserProfileModel = ({ user }: { user: AdminUser }) => {
       <div className="grid grid-cols-2 gap-4">
         <div className="p-3 bg-muted rounded-lg">
           <p className="text-xs text-muted-foreground mb-1">Member Since</p>
-          <p className="text-foreground font-semibold">
-            20{user.joinDate}
-          </p>
-        </div>
-        <div className="p-3 bg-muted rounded-lg">
-          <p className="text-xs text-muted-foreground mb-1">Deleted</p>
-          <p className="text-foreground font-semibold">
-            {user.isDeleted ? "Yes" : "No"}
-          </p>
-        </div>
+          <p className="text-foreground font-semibold">{format(user.createdAt,"yyyy-MM-dd")}</p>
+        </div> 
       </div>
     </div>
   );

@@ -1,5 +1,7 @@
 import { baseApi } from "@/redux/api/baseApi";
 import {
+  GetAllUsersParams,
+  GetAllUsersResponse,
   GetUserBookingStatsResponse,
   GetUserResponse,
   RegisterPayload,
@@ -38,8 +40,29 @@ export const userApi = baseApi.injectEndpoints({
       }),
       providesTags: ["Booking"],
     }),
+    getAllUsers: builder.query<GetAllUsersResponse, GetAllUsersParams>({
+      query: (params) => ({
+        url: "/user/all-users",
+        method: "GET",
+        params,
+      }),
+      providesTags: ["User"],
+    }),
+    getUserDetails: builder.query<GetUserResponse, { id: string }>({
+      query: ({ id }) => ({
+        url: `/user/${id}`,
+        method: "GET",
+      }),
+      providesTags: ["User"]
+    }),
   }),
 });
 
-export const { useCreateUserMutation, useGetUserQuery, useUpdateUserMutation, useGetUserBookingStatsQuery } =
-  userApi;
+export const {
+  useCreateUserMutation,
+  useGetUserQuery,
+  useUpdateUserMutation,
+  useGetUserBookingStatsQuery,
+  useGetAllUsersQuery,
+  useGetUserDetailsQuery,
+} = userApi;

@@ -10,12 +10,20 @@ import { AdminUser, adminUsers } from "@/mock/users";
 import UserProfileModel from "./UserProfileModel";
 import UserBlockModel from "./UserBlockModel";
 import UserDeleteModel from "./UserDeleteModel";
+import {
+  useGetUserDetailsQuery,
+  useUpdateUserMutation,
+} from "@/redux/features/user";
+import { toast } from "sonner";
+import { cn } from "@/lib/utils";
+import { Loader } from "lucide-react";
+import DialogSkeleton from "./DialogSkeleton";
 
 type ModalState =
-  | { type: "NONE" }
   | { type: "VIEW"; id: string }
   | { type: "BLOCK"; id: string }
-  | { type: "DELETE"; id: string };
+  | { type: "DELETE"; id: string }
+  | null;
 
 export default function UserDialogs({
   modal,
@@ -24,9 +32,37 @@ export default function UserDialogs({
   modal: ModalState;
   onClose: () => void;
 }) {
-  if (modal.type === "NONE") return null;
+  const isOpen = modal !== null;
 
-  const user = adminUsers[0];
+  const { data, isLoading } = useGetUserDetailsQuery(
+    { id: modal?.id ?? "" },
+    { skip: !isOpen },
+  );
+
+  if (!isOpen) return null;
+
+  if (isLoading) {
+    return <DialogSkeleton open />;
+  }
+
+  const user = data?.data;
+  if (!user) return null;
+
+  const [updateUser, { isLoading: updateUserStatusLoading }] =
+    useUpdateUserMutation();
+  const userStatus = user.isActive;
+  const handleBlock = async () => {
+    try {
+      await updateUser({
+        id: user?._id,
+        data: { isActive: userStatus === "ACTIVE" ? "BLOCKED" : "ACTIVE" },
+      }).unwrap();
+      toast.success("User status Update successfully!");
+    } catch (error: any) {
+      console.error(error.data.message);
+      toast.error(error?.data?.message || "User status update failed");
+    }
+  };
 
   return (
     <Dialog open onOpenChange={onClose}>
@@ -49,7 +85,21 @@ export default function UserDialogs({
               <Button variant="outline" onClick={onClose}>
                 Cancel
               </Button>
-              <Button variant="destructive">Confirm</Button>
+              <Button
+                className={cn("", "cursor-pointer")}
+                variant={userStatus === "ACTIVE" ? "destructive" : "secondary"}
+                onClick={handleBlock}
+                disabled={updateUserStatusLoading}
+              >
+                {isLoading ? (
+                  <>
+                    <Loader className="size-4 animate-spin" />
+                    Confirm
+                  </>
+                ) : (
+                  `Confirm`
+                )}
+              </Button>
             </div>
           </>
         )}
