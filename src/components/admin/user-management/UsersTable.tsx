@@ -1,4 +1,4 @@
-import { memo, useMemo } from "react";
+import { memo, useEffect, useMemo } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,10 +23,9 @@ import ApiErrorPage from "@/components/shared/ApiErrorPage";
 type Props = {
   onView: (id: string) => void;
   onBlock: (id: string) => void;
-  onDelete: (id: string) => void;
 };
 
-const UsersTable = memo(({ onView, onBlock, onDelete }: Props) => {
+const UsersTable = memo(({ onView, onBlock }: Props) => {
   const { getQuery, setQuery } = useQueryManager();
   const debouncedSearch = useDebounce(getQuery("search"), 500);
   const currentPage = Number(getQuery("page")) || 1;
@@ -42,9 +41,19 @@ const UsersTable = memo(({ onView, onBlock, onDelete }: Props) => {
   const users = useMemo(() => data?.data ?? [], [data?.data]);
   const totalPages = data?.meta.totalPage || 1;
   const safePage = Math.min(Math.max(currentPage, 1), totalPages);
+  useEffect(() => {
+    if (currentPage > totalPages && totalPages > 0) {
+      setQuery("page", totalPages.toString());
+    }
+  }, [currentPage, totalPages]);
   if (isLoading) return <BookingsTableSkeleton />;
   if (error) return <ApiErrorPage name="user" isButton={false} />;
-
+  if (users.length === 0)
+    return (
+      <div className="text-center py-12">
+        <p className="text-muted-foreground mb-4">No users yet</p>
+      </div>
+    );
   return (
     <div className="overflow-x-auto">
       <Table>
@@ -120,14 +129,6 @@ const UsersTable = memo(({ onView, onBlock, onDelete }: Props) => {
                     ) : (
                       <Ban size={16} />
                     )}
-                  </Button>
-                  <Button
-                    size="icon-sm"
-                    variant="destructive"
-                    className={cn("", "cursor-pointer")}
-                    onClick={() => onDelete(user._id)}
-                  >
-                    <Trash2 size={16} />
                   </Button>
                 </div>
               </TableCell>

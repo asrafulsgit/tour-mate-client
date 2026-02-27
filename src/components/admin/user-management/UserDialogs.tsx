@@ -4,12 +4,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { AdminUser, adminUsers } from "@/mock/users";
+import { Button } from "@/components/ui/button"; 
 import UserProfileModel from "./UserProfileModel";
-import UserBlockModel from "./UserBlockModel";
-import UserDeleteModel from "./UserDeleteModel";
+import UserBlockModel from "./UserBlockModel"; 
 import {
   useGetUserDetailsQuery,
   useUpdateUserMutation,
@@ -21,8 +18,7 @@ import DialogSkeleton from "./DialogSkeleton";
 
 type ModalState =
   | { type: "VIEW"; id: string }
-  | { type: "BLOCK"; id: string }
-  | { type: "DELETE"; id: string }
+  | { type: "BLOCK"; id: string } 
   | null;
 
 export default function UserDialogs({
@@ -32,24 +28,23 @@ export default function UserDialogs({
   modal: ModalState;
   onClose: () => void;
 }) {
-  const isOpen = modal !== null;
+  if (!modal) return null;
+  const { data, isLoading } = useGetUserDetailsQuery({ id: modal?.id });
 
-  const { data, isLoading } = useGetUserDetailsQuery(
-    { id: modal?.id ?? "" },
-    { skip: !isOpen },
-  );
-
-  if (!isOpen) return null;
+  const [updateUser, { isLoading: updateUserStatusLoading }] =
+    useUpdateUserMutation();
+  const user = data?.data;
 
   if (isLoading) {
     return <DialogSkeleton open />;
   }
 
-  const user = data?.data;
-  if (!user) return null;
-
-  const [updateUser, { isLoading: updateUserStatusLoading }] =
-    useUpdateUserMutation();
+  if (!user)
+    return (
+      <div className="text-center py-12">
+        <p className="text-muted-foreground mb-4">User not found</p>
+      </div>
+    );
   const userStatus = user.isActive;
   const handleBlock = async () => {
     try {
@@ -57,6 +52,7 @@ export default function UserDialogs({
         id: user?._id,
         data: { isActive: userStatus === "ACTIVE" ? "BLOCKED" : "ACTIVE" },
       }).unwrap();
+      onClose();
       toast.success("User status Update successfully!");
     } catch (error: any) {
       console.error(error.data.message);
@@ -91,7 +87,7 @@ export default function UserDialogs({
                 onClick={handleBlock}
                 disabled={updateUserStatusLoading}
               >
-                {isLoading ? (
+                {updateUserStatusLoading ? (
                   <>
                     <Loader className="size-4 animate-spin" />
                     Confirm
@@ -100,18 +96,6 @@ export default function UserDialogs({
                   `Confirm`
                 )}
               </Button>
-            </div>
-          </>
-        )}
-
-        {modal.type === "DELETE" && (
-          <>
-            <UserDeleteModel name={user.name} />
-            <div className="flex gap-2 justify-end">
-              <Button variant="outline" onClick={onClose}>
-                Cancel
-              </Button>
-              <Button variant="destructive">Delete</Button>
             </div>
           </>
         )}

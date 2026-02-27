@@ -21,8 +21,7 @@ import { cn } from "@/lib/utils";
 
 type ModalState =
   | { type: "VIEW"; id: string }
-  | { type: "BLOCK"; id: string }
-  | { type: "DELETE"; id: string } | null;
+  | { type: "BLOCK"; id: string } | null;
 
 export default function UserManagementPage() {
   const [modal, setModal] = useState<ModalState>(null);
@@ -36,10 +35,7 @@ export default function UserManagementPage() {
   const handleBlock = useCallback((id: string) => {
     setModal({ type: "BLOCK", id });
   }, []);
-
-  const handleDelete = useCallback((id: string) => {
-    setModal({ type: "DELETE", id });
-  }, []);
+ 
 
   const handleClose = useCallback(() => {
     setModal(null);
@@ -121,6 +117,7 @@ export default function UserManagementPage() {
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
+                  <SelectItem value="5">5</SelectItem>
                   <SelectItem value="10">10</SelectItem>
                   <SelectItem value="20">20</SelectItem>
                   <SelectItem value="30">30</SelectItem>
@@ -141,14 +138,13 @@ export default function UserManagementPage() {
           {/* Table */}
           <UsersTable
             onView={handleView}
-            onBlock={handleBlock}
-            onDelete={handleDelete}
+            onBlock={handleBlock} 
           />
         </div>
       </section>
 
       {/* Dialogs */}
-      <UserDialogs modal={modal} onClose={handleClose} />
+      {modal && <UserDialogs modal={modal} onClose={handleClose} />}
     </main>
   );
 }

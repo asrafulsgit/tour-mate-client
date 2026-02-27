@@ -1,4 +1,4 @@
-import { memo, useMemo } from "react";
+import { memo, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { TourCard } from "@/components/shared/TourCard";
 import { useGetAllToursQuery } from "@/redux/features/tour";
@@ -21,6 +21,7 @@ const ToursSection = memo(
     const { getQuery, setQuery } = useQueryManager();
     const debouncedSearch = useDebounce(getQuery("search"), 500);
     const currentPage = Number(getQuery("page")) || 1;
+
     const { data, isLoading, error } = useGetAllToursQuery({
       searchTerm: debouncedSearch ?? undefined,
       division: getQuery("division") ?? undefined,
@@ -33,9 +34,13 @@ const ToursSection = memo(
 
     const totalPages = data?.meta.totalPage || 1;
     const safePage = Math.min(Math.max(currentPage, 1), totalPages);
-
+    useEffect(() => {
+      if (currentPage > totalPages && totalPages > 0) {
+        setQuery("page", totalPages.toString());
+      }
+    }, [currentPage, totalPages]);
     return (
-      <> 
+      <>
         {/* Mobile Filter Button */}
         {isMobileOpen && (
           <div className="md:hidden mb-6">
@@ -44,7 +49,7 @@ const ToursSection = memo(
               className="w-full bg-transparent"
               onClick={onMobileFiltersOpen}
             >
-            <Filter size={12} />  Show Filters
+              <Filter size={12} /> Show Filters
             </Button>
           </div>
         )}
@@ -53,7 +58,7 @@ const ToursSection = memo(
         <div className="mt-4 sm:mt-8">
           <AppPagination
             currentPage={safePage}
-            totalPages={totalPages} 
+            totalPages={totalPages}
             onPageChange={(page) => setQuery("page", String(page))}
           />
         </div>

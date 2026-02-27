@@ -70,10 +70,10 @@ const AppPagination = ({
   const pages = generatePagination();
 
   const handlePageChange = (page: number) => {
-    if (page < 1 || page > totalPages) return;
-    if (page === currentPage) return;
-    onPageChange(page);
-  };
+  const safePage = Math.min(Math.max(page, 1), totalPages);
+  if (safePage === currentPage) return;
+  onPageChange(safePage);
+};
 
   return (
     <Pagination>

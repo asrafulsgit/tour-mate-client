@@ -4,6 +4,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogFooter,
+  DialogTitle,
 } from "@/components/ui/dialog";
 
 interface DialogSkeletonProps {
@@ -14,9 +15,11 @@ export default function DialogSkeleton({ open }: DialogSkeletonProps) {
   return (
     <Dialog open={open}>
       <DialogContent className="sm:max-w-md">
-        <DialogHeader className="space-y-2">
-          <Skeleton className="h-6 w-40" />
-          <Skeleton className="h-4 w-64" />
+        <DialogHeader>
+          <DialogTitle className="space-y-2">
+            <Skeleton className="h-6 w-40" />
+            <Skeleton className="h-4 w-64" />
+          </DialogTitle>
         </DialogHeader>
 
         {/* Body */}
