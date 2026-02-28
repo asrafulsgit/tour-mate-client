@@ -1,4 +1,4 @@
-import { memo, useEffect, useMemo } from "react";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,11 +9,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Ban, Eye, SquarePen, Trash2 } from "lucide-react";
-import { adminUsers } from "@/mock/users";
+import { Eye, SquarePen, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import { mockTours } from "@/mock/tours";
 import Link from "next/link";
 import useQueryManager from "@/hooks/useQueryManager";
 import { useDebounce } from "@/hooks/useDebounce";
@@ -22,13 +20,15 @@ import AppPagination from "@/components/shared/Pagination";
 import BookingsTableSkeleton from "@/components/user/TableSkeleton";
 import ApiErrorPage from "@/components/shared/ApiErrorPage";
 import { format } from "date-fns";
+import DeleteModel from "./DeleteModel";
 
-type Props = {
-  onDelete: () => void;
-};
-
-const ToursTable = memo(({ onDelete }: Props) => {
+const ToursTable = memo(() => {
   const { getQuery, setQuery } = useQueryManager();
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [selectedTour, setSelectedTour] = useState<{
+    name: string;
+    id: string;
+  } | null>(null);
   const debouncedSearch = useDebounce(getQuery("search"), 500);
   const currentPage = Number(getQuery("page")) || 1;
 
@@ -49,6 +49,17 @@ const ToursTable = memo(({ onDelete }: Props) => {
       setQuery("page", totalPages.toString());
     }
   }, [currentPage, totalPages]);
+  const handleDeleteClick = useCallback(
+    (tour: { _id: string; title: string }) => {
+      setSelectedTour({ name: tour.title, id: tour._id });
+      setDeleteDialogOpen(true);
+    },
+    [],
+  );
+  const handleDeleteSuccess = useCallback(() => {
+    setDeleteDialogOpen(false);
+    setSelectedTour(null);
+  }, []);
   if (isLoading) {
     return <BookingsTableSkeleton />;
   }
@@ -87,7 +98,9 @@ const ToursTable = memo(({ onDelete }: Props) => {
                 />
                 <h1 className="line-clamp-1">{tour.title}</h1>
               </TableCell>
-              <TableCell><p className="line-clamp-1">{tour.location}</p></TableCell>
+              <TableCell>
+                <p className="line-clamp-1">{tour.location}</p>
+              </TableCell>
               <TableCell>{tour.division.name}</TableCell>
               <TableCell>
                 <div className="flex flex-col">
@@ -126,7 +139,9 @@ const ToursTable = memo(({ onDelete }: Props) => {
                     size="icon-sm"
                     variant="destructive"
                     className={cn("", "cursor-pointer")}
-                    onClick={() => onDelete()}
+                    onClick={() =>
+                      handleDeleteClick({ title: tour.title, _id: tour._id })
+                    }
                   >
                     <Trash2 size={16} />
                   </Button>
@@ -143,6 +158,14 @@ const ToursTable = memo(({ onDelete }: Props) => {
           onPageChange={(page) => setQuery("page", String(page))}
         />
       </div>
+      {selectedTour && (
+        <DeleteModel
+          key={selectedTour.id}
+          data={selectedTour}
+          open={deleteDialogOpen}
+          onClose={handleDeleteSuccess}
+        />
+      )}
     </div>
   );
 });

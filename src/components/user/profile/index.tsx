@@ -87,7 +87,7 @@ function ProfilePage() {
                       <FormControl>
                         <div className="relative w-32 h-32 mx-auto">
                           <Image
-                            src={user?.picture || "uploads/image.jpg"}
+                            src={user?.picture || "/public/placeholder.png"}
                             alt="Preview"
                             fill
                             sizes="128px"

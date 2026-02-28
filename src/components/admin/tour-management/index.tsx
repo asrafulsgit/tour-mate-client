@@ -1,14 +1,10 @@
 "use client";
 
-import { useState } from "react";
 import UserHeader from "@/components/user/UserHeader";
-import ToursTable from "./ToursTable";
-import DeleteModel from "./DeleteModel";
-
+import ToursTable from "./ToursTable"; 
 import FilterSection from "./FilterSection";
 
-function TourManagementPage() {
-  const [modal, setModal] = useState<boolean>(false);
+function TourManagementPage() { 
 
   return (
     <main className="grow">
@@ -23,12 +19,9 @@ function TourManagementPage() {
           <FilterSection />
 
           {/* Table */}
-          <ToursTable onDelete={() => setModal(true)} />
+          <ToursTable />
         </div>
       </section>
-
-      {/* Dialogs */}
-      <DeleteModel modal={modal} onClose={() => setModal(false)} />
     </main>
   );
 }

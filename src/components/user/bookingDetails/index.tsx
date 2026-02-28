@@ -34,14 +34,20 @@ import ApiErrorPage from "@/components/shared/ApiErrorPage";
 import BookingDetailsSkeleton from "./BookingDetailsSkeleton";
 import { useRePaymentMutation } from "@/redux/features/payment";
 import { toast } from "sonner";
+import { useGetUserQuery } from "@/redux/features/user";
+import { Role } from "@/components/shared/Navbar";
 
 export default function BookingDetailsPage() {
   const bookingId = useParams().id as string;
+  const { data: userData,isLoading : userLoading } = useGetUserQuery();
+  const user = userData?.data;
+  const isAdmin = user?.role === Role.ADMIN || user?.role === Role.SUPER_ADMIN;
   const { data, isLoading, error } = useGetBookingDetailsQuery({
     id: bookingId,
   });
   const booking = data?.data;
   const [rePayment, { isLoading: paymentLoading }] = useRePaymentMutation();
+
   const handlePayment = async () => {
     try {
       const res = await rePayment({ id: bookingId }).unwrap();
@@ -52,7 +58,7 @@ export default function BookingDetailsPage() {
     }
   };
 
-  if (isLoading) {
+  if (isLoading || userLoading) {
     return <BookingDetailsSkeleton />;
   }
 
@@ -133,8 +139,12 @@ export default function BookingDetailsPage() {
               )}
 
               {/* Payment Button */}
-              {booking.status === "PENDING" && (
-                <Button onClick={handlePayment} disabled={paymentLoading} className="w-full">
+              {!isAdmin && booking.status === "PENDING" && (
+                <Button
+                  onClick={handlePayment}
+                  disabled={paymentLoading}
+                  className="w-full"
+                >
                   {paymentLoading ? (
                     <>
                       <Loader className="size-4 animate-spin" />

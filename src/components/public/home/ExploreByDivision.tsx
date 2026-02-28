@@ -37,7 +37,7 @@ const Divisions = () => {
     >
       {/* Thumbnail Image */}
       <Image
-        src={division.thumbnail || "uploads/image.jpg"}
+        src={division.thumbnail || "/public/placeholder.png"}
         alt={division.name}
         fill
         className="object-cover group-hover:scale-105 transition-transform duration-300"

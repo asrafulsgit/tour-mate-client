@@ -13,7 +13,7 @@ const BookingCard = ({ booking }: { booking: IBookingDetails }) => {
       <div className="flex flex-wrap gap-3 sm:gap-6">
         <div className="relative w-full sm:w-50 h-32 rounded-md overflow-hidden">
           <Image
-            src={booking.tour.images[0] || "uploads/image.jpg"}
+            src={booking.tour.images[0] || "/public/placeholder.png"}
             alt={booking.tour.title}
             fill
             className="object-cover"

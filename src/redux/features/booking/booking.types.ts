@@ -92,7 +92,7 @@ export interface IBookingDetails {
   payment: IPayment;
 }
 
-export type BookingStatus = "PENDING" | "COMPLETE" | "CANCEL" | "FAILED"
+export type BookingStatus = "PENDING" | "COMPLETE" | "CANCEL" | "FAILED";
 
 export interface IUser {
   _id: string;
@@ -110,3 +110,17 @@ export interface IPayment {
   amount: number;
   status?: IPaymentStatus;
 }
+
+export interface GetAllBookingsResponse {
+  success: boolean;
+  message: string;
+  data: IBooking[];
+  meta: { page: number; limit: number; total: number; totalPage: number };
+}
+
+export type GetAllBookingsParams = {
+  page?: number;
+  limit?: number;
+  searchTerm?: string;
+  status?: string;
+};

@@ -108,12 +108,12 @@ function GuideDialogs({
                         className="w-30 sm:w-40 h-20 sm:h-24 relative rounded-lg overflow-hidden"
                       >
                         <Image
-                          src={nid || "uploads/image.jpg"}
+                          src={nid || "/public/placeholder.png"}
                           alt={`NID-${i + 1}`}
                           fill
                           className="object-cover"
                           placeholder="blur"
-                          blurDataURL="uploads/image.jpg"
+                          blurDataURL="/public/placeholder.png"
                           priority={i === 0}
                         />
                       </div>

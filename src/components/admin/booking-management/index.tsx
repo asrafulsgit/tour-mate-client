@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Search, Download } from "lucide-react";
 import UserHeader from "@/components/user/UserHeader";
 import BookingsTable from "./BookingsTable";
+import FilterSection from "./FilterSection";
 
 function BookingManagementPage() {
   const [search, setSearch] = useState("");
@@ -20,24 +21,7 @@ function BookingManagementPage() {
       <section className="sm:pt-4 pb-8">
         <div className="max-w-7xl mx-auto px-2 sm:px-4 space-y-6">
           {/* Filters */}
-          <div className="flex gap-3">
-            <div className="relative flex-1">
-              <Search
-                size={18}
-                className="absolute left-3 top-2.5 text-muted-foreground"
-              />
-              <Input
-                placeholder="Search bookings..."
-                className="pl-10"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            </div>
-            <Button variant="outline">
-              <Download size={16} className="mr-2" />
-              Export
-            </Button>
-          </div>
+          <FilterSection />
 
           {/* Table */}
           <BookingsTable />

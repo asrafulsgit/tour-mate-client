@@ -27,7 +27,7 @@ function TourDetailPage() {
       {/* Hero Image */}
       <section className="relative w-full h-56 sm:h-96 md:h-96 overflow-hidden">
         <Image
-          src={tour?.images[0] || "uploads/image.jpg"}
+          src={tour?.images[0] || "/public/placeholder.png"}
           alt={tour?.title || "tour thumnail"}
           fill
           className="object-cover"

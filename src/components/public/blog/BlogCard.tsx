@@ -10,7 +10,7 @@ const BlogCard = ({ blog }: { blog: Blog }) => {
       <div className="bg-card rounded-lg overflow-hidden border border-border hover:shadow-lg hover:border-primary transition-all group cursor-pointer h-full flex flex-col">
         <div className="relative  w-full h-48 overflow-hidden bg-muted">
           <Image
-            src={blog.thumbnail || "uploads/image.jpg"}
+            src={blog.thumbnail || "/public/placeholder.png"}
             alt={blog.title}
             fill
             className="object-cover group-hover:scale-105 transition-transform duration-300"

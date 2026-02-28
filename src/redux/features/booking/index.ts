@@ -2,6 +2,8 @@ import { baseApi } from "@/redux/api/baseApi";
 import {
   CreateBookingPayload,
   CreateBookingResponse,
+  GetAllBookingsParams,
+  GetAllBookingsResponse,
   GetMyBookingsResponse,
   IBookingDetailsResponse,
 } from "./booking.types";
@@ -26,14 +28,29 @@ export const bookingApi = baseApi.injectEndpoints({
       }),
       providesTags: ["Booking"],
     }),
-    getBookingDetails: builder.query<IBookingDetailsResponse, {id : string}>({
-      query: ({id}) => ({
+    getBookingDetails: builder.query<IBookingDetailsResponse, { id: string }>({
+      query: ({ id }) => ({
         url: `/booking/${id}`,
         method: "GET",
       }),
       providesTags: ["Booking"],
     }),
+    getAllBookings: builder.query<GetAllBookingsResponse, GetAllBookingsParams>(
+      {
+        query: (params) => ({
+          url: `/booking/all`,
+          method: "GET",
+          params
+        }),
+        providesTags: ["Booking"],
+      },
+    ),
   }),
 });
 
-export const { useCreateBookingMutation, useGetMyBookingsQuery, useGetBookingDetailsQuery } = bookingApi;
+export const {
+  useCreateBookingMutation,
+  useGetMyBookingsQuery,
+  useGetBookingDetailsQuery,
+  useGetAllBookingsQuery,
+} = bookingApi;

@@ -62,7 +62,7 @@ export default function BookingsTable({
                 <div className="flex items-center gap-3">
                   <div className="relative w-20 h-14 rounded-md overflow-hidden">
                     <Image
-                      src={booking.tour.images[0] || "uploads/image.jpg"}
+                      src={booking.tour.images[0] || "/public/placeholder.png"}
                       alt={booking.tour.title}
                       fill
                       className="object-cover"
