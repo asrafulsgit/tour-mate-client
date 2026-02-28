@@ -54,9 +54,9 @@ function GuideManagementPage() {
       />
 
       <section className="sm:pt-4 pb-8">
-        <div className="max-w-7xl mx-auto px-4 space-y-6">
+        <div className="max-w-7xl mx-auto px-2 sm:px-4 space-y-6">
           {/* Filters */}
-          <div className="flex gap-3">
+          <div className="flex gap-3 flex-col sm:flex-row">
             <div className="relative flex-1">
               <Search
                 size={18}
@@ -69,7 +69,8 @@ function GuideManagementPage() {
                 onChange={(e) => setQuery("search", e.target.value)}
               />
             </div>
-            <Select
+           <div className="flex gap-2">
+             <Select
               value={getQuery("status") ?? ""}
               onValueChange={(value) => setQuery("status", value)}
             >
@@ -92,6 +93,7 @@ function GuideManagementPage() {
             >
               Reset Filters
             </Button>
+           </div>
           </div>
 
           {/* List */}

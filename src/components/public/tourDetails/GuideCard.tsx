@@ -14,7 +14,7 @@ const GuideCard = ({ guide }: { guide: GuidePopulatedData }) => {
       <div className="flex items-start gap-4">
         <div className="w-12 sm:w-16 h-12  sm:h-16 rounded-full overflow-hidden shrink-0">
           <Image
-            src={guide.picture || "/placeholder.svg"}
+            src={guide.picture || "uploads/image.jpg"}
             alt={guide.name ?? "Guide profile"}
             width={64}
             height={64}

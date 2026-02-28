@@ -18,7 +18,7 @@ export function TourCard({ tour }: TourCardProps) {
         {/* Image Container */}
         <div className="relative w-full h-48 overflow-hidden bg-muted">
           <Image
-            src={tour.images[0] || "/placeholder.svg"}
+            src={tour.images[0] || "uploads/image.jpg"}
             alt={tour.title}
             fill
             className="object-cover group-hover:scale-105 transition-transform duration-300"

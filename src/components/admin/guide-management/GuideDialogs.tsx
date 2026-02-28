@@ -108,12 +108,12 @@ function GuideDialogs({
                         className="w-30 sm:w-40 h-20 sm:h-24 relative rounded-lg overflow-hidden"
                       >
                         <Image
-                          src={nid || "/placeholder.svg"}
+                          src={nid || "uploads/image.jpg"}
                           alt={`NID-${i + 1}`}
                           fill
                           className="object-cover"
                           placeholder="blur"
-                          blurDataURL="/placeholder.svg"
+                          blurDataURL="uploads/image.jpg"
                           priority={i === 0}
                         />
                       </div>
@@ -179,11 +179,7 @@ function GuideDialogs({
                   <Button variant="outline" onClick={onClose}>
                     Cancel
                   </Button>
-                  <Button
-                    variant="destructive"
-                    disabled={rejectLoading}
-                    onClick={handleReject}
-                  >
+                  <Button variant="destructive" disabled={rejectLoading} onClick={handleReject}>
                     {rejectLoading ? (
                       <>
                         <Loader className="size-4 animate-spin" />
@@ -192,6 +188,7 @@ function GuideDialogs({
                     ) : (
                       `Reject`
                     )}
+                    
                   </Button>
                 </div>
               </>

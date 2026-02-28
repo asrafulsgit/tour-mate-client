@@ -3,6 +3,7 @@ import {
   GetTourDetailsResponse,
   GetToursParams,
   GetToursResponse,
+  SuccessResponse,
 } from "./tour.types";
 
 export const tourApi = baseApi.injectEndpoints({
@@ -22,7 +23,31 @@ export const tourApi = baseApi.injectEndpoints({
       }),
       providesTags: ["Tour"],
     }),
+    crateTour: builder.mutation<SuccessResponse, FormData>({
+      query: (formData) => ({
+        url: "/tour/create",
+        method: "POST",
+        body: formData,
+      }),
+      invalidatesTags: ["Tour"],
+    }),
+    updateTour: builder.mutation<
+      GetTourDetailsResponse,
+      { formData: FormData; id: string }
+    >({
+      query: ({ formData, id }) => ({
+        url: `/tour/${id}`,
+        method: "PATCH",
+        body: formData,
+      }),
+      invalidatesTags: ["Tour"],
+    }),
   }),
 });
 
-export const { useGetAllToursQuery,useGetTourDetailsQuery } = tourApi;
+export const {
+  useGetAllToursQuery,
+  useGetTourDetailsQuery,
+  useCrateTourMutation,
+  useUpdateTourMutation,
+} = tourApi;

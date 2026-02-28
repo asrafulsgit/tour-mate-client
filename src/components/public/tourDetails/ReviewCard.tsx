@@ -10,7 +10,7 @@ const ReviewCard = ({ review }: { review: Review }) => {
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-2">
           {review.user.picture ? <Image
-            src={review.user.picture || "/placeholder.svg"}
+            src={review.user.picture || "uploads/image.jpg"}
             alt={review.user.name}
             width={40}
             height={40}

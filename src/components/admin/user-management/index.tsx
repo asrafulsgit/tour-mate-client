@@ -21,7 +21,8 @@ import { cn } from "@/lib/utils";
 
 type ModalState =
   | { type: "VIEW"; id: string }
-  | { type: "BLOCK"; id: string } | null;
+  | { type: "BLOCK"; id: string }
+  | null;
 
 export default function UserManagementPage() {
   const [modal, setModal] = useState<ModalState>(null);
@@ -35,7 +36,6 @@ export default function UserManagementPage() {
   const handleBlock = useCallback((id: string) => {
     setModal({ type: "BLOCK", id });
   }, []);
- 
 
   const handleClose = useCallback(() => {
     setModal(null);
@@ -50,7 +50,7 @@ export default function UserManagementPage() {
       <section className="sm:pt-4 pb-8">
         <div className="max-w-7xl mx-auto px-4 space-y-6">
           {/* Filters */}
-          <div className="flex gap-3">
+          <div className="flex gap-3 flex-col md:flex-row">
             <div className="relative flex-1">
               <Search
                 size={18}
@@ -63,83 +63,84 @@ export default function UserManagementPage() {
                 onChange={(e) => setQuery("search", e.target.value)}
               />
             </div>
-            <Select
-              value={getQuery("role") ?? ""}
-              onValueChange={(value) => setQuery("role", value)}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Role" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectItem value={Role.USER}>User</SelectItem>
-                  <SelectItem value={Role.GUIDE}>Guide</SelectItem>
-                  <SelectItem value={Role.ADMIN}>Admin</SelectItem>
-                  <SelectItem value={Role.SUPER_ADMIN}>Super Admin</SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-            <Select
-              value={getQuery("isActive") ?? ""}
-              onValueChange={(value) => setQuery("isActive", value)}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectItem value="ACTIVE">Active</SelectItem>
-                  <SelectItem value="INACTIVE">Inactive</SelectItem>
-                  <SelectItem value="BLOCKED">Blocked</SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-            <Select
-              value={getQuery("isVerified") ?? ""}
-              onValueChange={(value) => setQuery("isVerified", value)}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Verification" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectItem value="true">Verified</SelectItem>
-                  <SelectItem value="false">Unverified</SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-            <Select
-              value={String(limit)}
-              onValueChange={(value) => setQuery("limit", value)}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Limit" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectItem value="5">5</SelectItem>
-                  <SelectItem value="10">10</SelectItem>
-                  <SelectItem value="20">20</SelectItem>
-                  <SelectItem value="30">30</SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
+            <div className="flex gap-2 flex-wrap">
+              <Select
+                value={getQuery("role") ?? ""}
+                onValueChange={(value) => setQuery("role", value)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Role" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value={Role.USER}>User</SelectItem>
+                    <SelectItem value={Role.GUIDE}>Guide</SelectItem>
+                    <SelectItem value={Role.ADMIN}>Admin</SelectItem>
+                    <SelectItem value={Role.SUPER_ADMIN}>
+                      Super Admin
+                    </SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              <Select
+                value={getQuery("isActive") ?? ""}
+                onValueChange={(value) => setQuery("isActive", value)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value="ACTIVE">Active</SelectItem>
+                    <SelectItem value="INACTIVE">Inactive</SelectItem>
+                    <SelectItem value="BLOCKED">Blocked</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              <Select
+                value={getQuery("isVerified") ?? ""}
+                onValueChange={(value) => setQuery("isVerified", value)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Verification" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value="true">Verified</SelectItem>
+                    <SelectItem value="false">Unverified</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              <Select
+                value={String(limit)}
+                onValueChange={(value) => setQuery("limit", value)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Limit" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value="5">5</SelectItem>
+                    <SelectItem value="10">10</SelectItem>
+                    <SelectItem value="20">20</SelectItem>
+                    <SelectItem value="30">30</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
 
-            {/* Reset */}
-            <Button
-              variant="outline"
-              className={cn("", "cursor-pointer")}
-              onClick={clearQuery}
-            >
-              Reset Filters
-            </Button>
+              {/* Reset */}
+              <Button
+                variant="outline"
+                className={cn("", "cursor-pointer")}
+                onClick={clearQuery}
+              >
+                Reset Filters
+              </Button>
+            </div>
           </div>
 
           {/* Table */}
-          <UsersTable
-            onView={handleView}
-            onBlock={handleBlock} 
-          />
+          <UsersTable onView={handleView} onBlock={handleBlock} />
         </div>
       </section>
 

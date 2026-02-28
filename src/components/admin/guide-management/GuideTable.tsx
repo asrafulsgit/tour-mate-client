@@ -13,6 +13,7 @@ import {
 } from "@/redux/features/guide/guide.types";
 import { useEffect, useMemo } from "react";
 import ApiErrorPage from "@/components/shared/ApiErrorPage";
+import GuideApplicationsSkeleton from "./GuideApplicationsSkeleton";
 
 type Props = {
   onDetails: (id: string) => void;
@@ -39,7 +40,7 @@ function GuideTable({ onDetails, onApprove, onReject }: Props) {
       setQuery("page", totalPages.toString());
     }
   }, [currentPage, totalPages]);
-  // if (isLoading) return <BookingsTableSkeleton />;
+  if (isLoading) return <GuideApplicationsSkeleton />;
   if (error) return <ApiErrorPage name="guide applications" isButton={false} />;
   if (applications.length === 0) {
     return (
@@ -74,7 +75,7 @@ function GuideTable({ onDetails, onApprove, onReject }: Props) {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-2 sm:gap-4 mb-4">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                   <div>
                     <p className="text-xs text-muted-foreground mb-1">Email</p>
                     <p className="text-sm font-medium text-foreground">

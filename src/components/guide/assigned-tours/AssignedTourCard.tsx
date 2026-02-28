@@ -12,7 +12,7 @@ const AssignedTourCard = ({ tour }: { tour: AssignedTour }) => {
         {/* Tour Image */}
         <div className="relative h-40 rounded-lg overflow-hidden md:col-span-1">
           <Image
-            src={tour.image || "/placeholder.svg"}
+            src={tour.image || "uploads/image.jpg"}
             alt={tour.tourTitle}
             fill
             className="object-cover"

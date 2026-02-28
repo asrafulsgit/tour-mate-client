@@ -68,3 +68,12 @@ export type GetTourDetailsResponse = {
   message: string;
   data: Tour;
 };
+export type SuccessResponse = {
+  success: boolean;
+  message: string;
+  data: null;
+};
+
+
+
+

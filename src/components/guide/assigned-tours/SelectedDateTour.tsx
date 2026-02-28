@@ -75,7 +75,7 @@ const SelectedDateTour = ({ tour }: { tour: AssignedTour }) => {
             {/* Image */}
             <div className="relative h-38 lg:h-48 rounded-lg overflow-hidden">
               <Image
-                src={tour.image || "/placeholder.svg"}
+                src={tour.image || "uploads/image.jpg"}
                 alt={tour.tourTitle}
                 fill
                 className="object-cover"

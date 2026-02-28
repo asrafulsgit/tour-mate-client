@@ -14,7 +14,7 @@ const UserProfileModel = ({ user }: { user: User }) => {
           sm:pb-6 border-b border-border"
       >
         <Image
-          src={user.picture || "/placeholder.svg"}
+          src={user.picture || "uploads/image.jpg"}
           alt={user.name}
           width={80}
           height={80}

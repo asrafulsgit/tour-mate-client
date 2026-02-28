@@ -55,8 +55,8 @@ const UsersTable = memo(({ onView, onBlock }: Props) => {
       </div>
     );
   return (
-    <div className="overflow-x-auto">
-      <Table>
+    <div className=" overflow-x-auto">
+      <Table className="min-w-5xl">
         <TableHeader>
           <TableRow>
             <TableHead>User</TableHead>
@@ -73,7 +73,7 @@ const UsersTable = memo(({ onView, onBlock }: Props) => {
             <TableRow key={user._id}>
               <TableCell className="flex items-center gap-3">
                 <Image
-                  src={user.picture || "/placeholder.png"}
+                  src={user.picture || "uploads/image.jpg"}
                   width={32}
                   height={32}
                   className="w-8 h-8 rounded-full"

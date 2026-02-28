@@ -12,14 +12,13 @@ import { format } from "date-fns";
 import { useGetReviewsQuery } from "@/redux/features/review";
 import ApiErrorPage from "@/components/shared/ApiErrorPage";
 import TourDetailsSkeleton from "./TourDetailsSkeleton";
-import ReviewSkeleton from "./ReviewSkeleton";
+import ReviewSkeleton from "./ReviewSkeleton"; 
 
 function TourDetailPage() {
   const params = useParams();
   const tourId = params.id as string;
   const { data, isLoading, error } = useGetTourDetailsQuery(tourId);
   const tour = data?.data;
-
   if (isLoading) return <TourDetailsSkeleton />;
   if (error) return <ApiErrorPage name="Tour details" />;
 
@@ -28,7 +27,7 @@ function TourDetailPage() {
       {/* Hero Image */}
       <section className="relative w-full h-56 sm:h-96 md:h-96 overflow-hidden">
         <Image
-          src={tour?.images[0] || "/placeholder.svg"}
+          src={tour?.images[0] || "uploads/image.jpg"}
           alt={tour?.title || "tour thumnail"}
           fill
           className="object-cover"

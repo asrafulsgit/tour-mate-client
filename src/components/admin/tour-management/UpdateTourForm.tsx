@@ -1,6 +1,6 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -13,64 +13,460 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
-
-const tourSchema = z.object({
-  title: z.string({ error: "Title is required" }),
-  description: z.string({ error: "Description is required" }),
-});
-type TourFormValues = z.infer<typeof tourSchema>;
+import { toast } from "sonner";
+import { Textarea } from "@/components/ui/textarea";
+import { useGetTourTypesQuery } from "@/redux/features/tourType";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Combobox } from "@/components/shared/combobox";
+import { useGetAllDivisionsQuery } from "@/redux/features/division";
+import { DynamicArrayField } from "./ArrayInput";
+import { ImageUploadField } from "./MutlipleImageUploader";
+import { CreateTourFormValues, createTourSchema } from "./lib/tour-validations";
+import {
+  useCrateTourMutation,
+  useGetTourDetailsQuery,
+  useUpdateTourMutation,
+} from "@/redux/features/tour";
+import { Loader, X } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { useGetAllGuideApplicationsQuery } from "@/redux/features/guide";
+import { useEffect, useState } from "react";
+import Image from "next/image";
+import TourUpdateFormSkeleton from "./TourUpdateFormSkeleton";
+import ApiErrorPage from "@/components/shared/ApiErrorPage";
 
 function UpdatetourForm() {
   const router = useRouter();
+  const tourId = useParams().id as string;
+  const [deletedImage, setDeletedImage] = useState<string[]>();
+  const [images, setImages] = useState<string[]>();
 
-  const form = useForm<TourFormValues>({
-    resolver: zodResolver(tourSchema),
+  const form = useForm<CreateTourFormValues>({
+    resolver: zodResolver(createTourSchema),
     defaultValues: {
-      title: "this is a tour",
-      description: "tour description",
+      title: "",
+      description: "",
+      location: "",
+      costFrom: 0,
+      startDate: "",
+      endDate: "",
+      maxGuest: 1,
+      minAge: 0,
+      division: "",
+      tourType: "",
+      guide: "",
+      included: [],
+      amenities: [],
+      tourPlan: [],
+      images: [],
     },
   });
 
-  const onSubmit = (values: TourFormValues) => {
-    console.log("tour values:", values);
+  const {
+    data: tourData,
+    isLoading: tourLoading,
+    error,
+  } = useGetTourDetailsQuery(tourId);
+  useEffect(() => {
+    if (tourData?.data) {
+      const tour = tourData.data;
+
+      // Transform array data to expected format
+      const included =
+        tour.included?.map((item: string) => ({ value: item })) || [];
+      const amenities =
+        tour.amenities?.map((item: string) => ({ value: item })) || [];
+      const tourPlan =
+        tour.tourPlan?.map((item: string) => ({ value: item })) || [];
+
+      // images
+      setImages(tour.images);
+
+      form.reset({
+        title: tour.title || "",
+        description: tour.description || "",
+        location: tour.location || "",
+        costFrom: tour.costFrom || 0,
+        startDate: tour.startDate?.split("T")[0] || "",
+        endDate: tour.endDate?.split("T")[0] || "",
+        maxGuest: tour.maxGuest || 1,
+        minAge: tour.minAge || 0,
+        division: tour.division._id || "",
+        tourType: tour.tourType?._id || "",
+        guide: tour.guide?._id || "",
+        included,
+        amenities,
+        tourPlan,
+      });
+    }
+  }, [tourData, form]);
+
+  const { data: tourTypeData, isLoading: tourTypeLoading } =
+    useGetTourTypesQuery();
+  const { data: divisionsData, isLoading: divisionsLoading } =
+    useGetAllDivisionsQuery();
+  const { data: guidesData, isLoading: guidesLoading } =
+    useGetAllGuideApplicationsQuery({
+      status: "APPROVED",
+    });
+
+  const tourTypes =
+    tourTypeData?.data?.map((type) => ({
+      value: type._id,
+      label: type.name,
+    })) ?? [];
+
+  const divisions =
+    divisionsData?.data?.map((division) => ({
+      value: division._id,
+      label: division.name,
+    })) ?? [];
+
+  const guides =
+    guidesData?.data?.map((guide) => ({
+      value: guide.userId._id,
+      label: `${guide.userId.name} (${guide.divisionId.name})`,
+    })) ?? [];
+
+  const today = new Date().toISOString().split("T")[0];
+  const startDate = form.watch("startDate");
+
+  const [updateTour, { isLoading }] = useUpdateTourMutation();
+
+  const onSubmit = async (data: CreateTourFormValues) => {
+    try {
+      const formData = new FormData();
+
+      // Append simple fields
+      Object.entries(data).forEach(([key, value]) => {
+        if (!["images", "included", "amenities", "tourPlan"].includes(key)) {
+          // Skip empty strings for optional fields
+          if (value !== "" && value !== undefined && value !== null) {
+            formData.append(key, String(value));
+          }
+        }
+      });
+
+      // Append arrays - extract values from objects
+      data.included?.forEach((item) => formData.append("included", item.value));
+      data.amenities?.forEach((item) =>
+        formData.append("amenities", item.value),
+      );
+      data.tourPlan?.forEach((item) => formData.append("tourPlan", item.value));
+      if (deletedImage?.length) {
+        formData.append("deleteImages", JSON.stringify(deletedImage));
+      }
+
+      // Append files
+      data?.images?.forEach((file) => formData.append("images", file));
+
+      // API call
+      await updateTour({ formData, id: tourId }).unwrap();
+      form.reset();
+      toast.success("Tour update successfully!");
+      handleCancell();
+    } catch (error: any) {
+      console.error("Tour update failed:", error);
+      toast.error(error?.data?.message || "Failed to update tour");
+    }
   };
 
   const handleCancell = () => {
     router.back();
   };
 
+  const handleDeleteImage = (imageToDelete: string) => {
+    setDeletedImage((prev) => [...(prev || []), imageToDelete]);
+
+    setImages((prev) =>
+      prev ? prev.filter((img) => img !== imageToDelete) : [],
+    );
+  };
+
+  if (tourLoading) return <TourUpdateFormSkeleton />;
+  if (error) return <ApiErrorPage name="tour" />;
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <Card className="bg-none border-none shadow-none">
-          <CardContent className="space-y-4 p-0 ">
-            {/* title */}
+        <Card className="border-none shadow-none sm:py-2">
+          <CardContent className="space-y-4 p-0">
             <FormField
               control={form.control}
               name="title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Title *</FormLabel>
-                  <Input placeholder="Enter tour title" {...field} />
+                  <FormLabel>Title</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Tour title" {...field} />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-            {/* description */}
             <FormField
               control={form.control}
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Description *</FormLabel>
-                  <Input placeholder="Enter tour description" {...field} />
+                  <FormLabel>Description</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Tour description"
+                      {...field}
+                      rows={4}
+                    />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
+
+            <FormField
+              control={form.control}
+              name="location"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Location</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Tour location" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="costFrom"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Cost From ($)</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      min={0}
+                      placeholder="0"
+                      {...field}
+                      onChange={(e) =>
+                        field.onChange(e.target.valueAsNumber || 0)
+                      }
+                      value={field.value}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Dates */}
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="startDate"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Start Date</FormLabel>
+                    <FormControl>
+                      <Input type="date" {...field} min={today} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="endDate"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>End Date</FormLabel>
+                    <FormControl>
+                      <Input type="date" {...field} min={startDate || today} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            {/* Capacity */}
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="maxGuest"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Max Guests</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        min={1}
+                        {...field}
+                        onChange={(e) =>
+                          field.onChange(e.target.valueAsNumber || 1)
+                        }
+                        value={field.value}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="minAge"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Minimum Age</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        min={0}
+                        {...field}
+                        onChange={(e) =>
+                          field.onChange(e.target.valueAsNumber || 0)
+                        }
+                        value={field.value}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            {/* Selections */}
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="division"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Division</FormLabel>
+                    <FormControl>
+                      {divisionsLoading ? (
+                        <Skeleton className="h-10 w-full rounded-md" />
+                      ) : (
+                        <Combobox
+                          options={divisions}
+                          value={field.value}
+                          onChange={field.onChange}
+                          placeholder="Select division"
+                        />
+                      )}
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="tourType"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Tour Type</FormLabel>
+                    <FormControl>
+                      {tourTypeLoading ? (
+                        <Skeleton className="h-10 w-full rounded-md" />
+                      ) : (
+                        <Combobox
+                          options={tourTypes}
+                          value={field.value}
+                          onChange={field.onChange}
+                          placeholder="Select tour type"
+                        />
+                      )}
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <FormField
+              control={form.control}
+              name="guide"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Assign Guide</FormLabel>
+                  <FormControl>
+                    {guidesLoading ? (
+                      <Skeleton className="h-10 w-full rounded-md" />
+                    ) : (
+                      <Combobox
+                        options={guides}
+                        value={field.value}
+                        onChange={field.onChange}
+                        placeholder="Select guide"
+                      />
+                    )}
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Dynamic Arrays */}
+            <DynamicArrayField
+              name="included"
+              label="Included Items"
+              placeholder="e.g., Breakfast, Hotel pickup"
+            />
+
+            <DynamicArrayField
+              name="amenities"
+              label="Amenities"
+              placeholder="e.g., WiFi, AC, Pool"
+            />
+
+            <DynamicArrayField
+              name="tourPlan"
+              label="Tour Plan"
+              placeholder="Describe day's activities"
+              useTextarea
+            />
+
+            {/* Images */}
+            <FormField
+              control={form.control}
+              name="images"
+              render={({ field }) => (
+                <ImageUploadField
+                  value={field.value ?? []}
+                  onChange={field.onChange}
+                  existingImages={images?.length}
+                />
+              )}
+            />
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {images?.map((img) => (
+                <div key={img} className="relative group">
+                  <div className="rounded-lg overflow-hidden border border-gray-200">
+                    <Image
+                      src={img}
+                      alt={`Preview ${img + 1}`}
+                      width={200}
+                      height={100}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    size="icon"
+                    className="absolute -top-2 -right-2 h-6 w-6 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                    onClick={() => handleDeleteImage(img)}
+                  >
+                    <X size={12} />
+                  </Button>
+                </div>
+              ))}
+            </div>
           </CardContent>
         </Card>
         {/* Form Actions */}
@@ -83,8 +479,20 @@ function UpdatetourForm() {
           >
             Cancel
           </Button>
-          <Button type="submit" size="lg">
-            Update Tour
+          <Button
+            type="submit"
+            className={cn("", "cursor-pointer")}
+            size="lg"
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <>
+                <Loader className="size-4 animate-spin" />
+                Update Tour
+              </>
+            ) : (
+              `Update Tour`
+            )}
           </Button>
         </div>
       </form>

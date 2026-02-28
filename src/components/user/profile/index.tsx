@@ -62,6 +62,7 @@ function ProfilePage() {
       }).unwrap();
     } catch (error: any) {
       console.error(error.data.message);
+      toast.error(error.data.message || "Profile update failed!")
     }
   };
   return (
@@ -86,7 +87,7 @@ function ProfilePage() {
                       <FormControl>
                         <div className="relative w-32 h-32 mx-auto">
                           <Image
-                            src={user?.picture || "/placeholder.png"}
+                            src={user?.picture || "uploads/image.jpg"}
                             alt="Preview"
                             fill
                             sizes="128px"
@@ -171,6 +172,12 @@ function ProfilePage() {
                 <div className="space-y-1.5">
                   <Label>Phone Number</Label>
                   <p className="text-foreground sm:text-lg">{user?.phone}</p>
+                </div>
+
+                {/* Phone */}
+                <div className="space-y-1.5">
+                  <Label>Address</Label>
+                  <p className="text-foreground sm:text-lg">{user?.address}</p>
                 </div>
 
                 {/* Bio */}
