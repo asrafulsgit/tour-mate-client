@@ -23,4 +23,9 @@ export type GetAllDivisionsResponse = {
     total: number;
   };
 };
+export type GetDivisionResponse = {
+  success: boolean;
+  message: string;
+  data: Division; 
+};
 

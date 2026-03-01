@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, Download, Plus } from "lucide-react";
@@ -10,11 +10,18 @@ import DeleteModel from "./DeleteModel";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
-type ModalState = { type: "NONE" } | { type: "DELETE"; id: string };
+type ModalState = { type: "DELETE"; id: string } | null;
 
 function DivisionManagementPage() {
   const [search, setSearch] = useState("");
-  const [modal, setModal] = useState<ModalState>({ type: "NONE" });
+  const [modal, setModal] = useState<ModalState>(null);
+
+  const handleDelete = useCallback((id: string) => {
+    setModal({ type: "DELETE", id });
+  }, []);
+  const handleClose = useCallback(() => {
+    setModal(null);
+  }, []);
   return (
     <main className="grow">
       <UserHeader
@@ -46,14 +53,12 @@ function DivisionManagementPage() {
           </div>
 
           {/* Table */}
-          <DivisiosTable
-            onDelete={(id) => setModal({ type: "DELETE", id: id })}
-          />
+          <DivisiosTable onDelete={handleDelete} />
         </div>
       </section>
 
       {/* delete model */}
-      <DeleteModel modal={modal} onClose={() => setModal({ type: "NONE" })} />
+      {modal && <DeleteModel modal={modal} onClose={handleClose} />}
     </main>
   );
 }

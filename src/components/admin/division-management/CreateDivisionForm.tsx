@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
-import { X } from "lucide-react";
+import { Loader, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,10 +19,12 @@ import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
+import { useCreateDivisionMutation } from "@/redux/features/division";
+import { toast } from "sonner";
+import { useRef } from "react";
 
 const divisionSchema = z.object({
   name: z.string().min(1, "Name is required"),
-  description: z.string().min(1, "Description is required"),
   thumbnail: z
     .instanceof(File, { message: "Thumbnail should be a file" })
     .refine(
@@ -35,12 +37,11 @@ type DivisionFormValues = z.infer<typeof divisionSchema>;
 
 function CreateDivisionForm() {
   const router = useRouter();
-
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const form = useForm<DivisionFormValues>({
     resolver: zodResolver(divisionSchema),
     defaultValues: {
       name: "",
-      description: "",
       thumbnail: undefined,
     },
   });
@@ -50,18 +51,42 @@ function CreateDivisionForm() {
     if (!file) return null;
     return URL.createObjectURL(file);
   };
-  const onSubmit = (values: DivisionFormValues) => {
-    console.log("Division values:", values);
+  const [createDivision, { isLoading: createLoading }] =
+    useCreateDivisionMutation();
+
+  const onSubmit = async (values: DivisionFormValues) => {
+    const formdata = new FormData();
+    if (values?.thumbnail) {
+      formdata.append("image", values.thumbnail);
+    }
+    formdata.append("name", values.name);
+
+    try {
+      await createDivision(formdata).unwrap();
+      form.reset();
+      toast.success("Division created!");
+      handleCancell();
+    } catch (error: any) {
+      console.error(error.data.message);
+      toast.error(error?.data?.message || "Create division failed");
+    }
   };
 
   const handleCancell = () => {
     router.back();
   };
 
+  const handleClearImage = () => {
+    form.resetField("thumbnail");
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <Card className="bg-none border-none shadow-none">
+        <Card className="bg-none sm:py-2 border-none shadow-none">
           <CardContent className="space-y-4 p-0 ">
             {/* name */}
             <FormField
@@ -75,20 +100,6 @@ function CreateDivisionForm() {
                 </FormItem>
               )}
             />
-
-            {/* description */}
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description *</FormLabel>
-                  <Input placeholder="Enter division description" {...field} />
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
             <FormField
               name="thumbnail"
               control={form.control}
@@ -97,6 +108,7 @@ function CreateDivisionForm() {
                   <FormLabel>Thumbnail</FormLabel>
                   <FormControl>
                     <Input
+                      ref={fileInputRef}
                       type="file"
                       accept="image/png, image/jpeg"
                       onChange={(e) => field.onChange(e.target.files?.[0])}
@@ -113,9 +125,7 @@ function CreateDivisionForm() {
                           size={"xs"}
                           variant="outline"
                           className={cn("", "cursor-pointer")}
-                          onClick={() => {
-                            form.resetField("thumbnail");
-                          }}
+                          onClick={handleClearImage}
                         >
                           <X size={16} />
                         </Button>
@@ -145,8 +155,20 @@ function CreateDivisionForm() {
           >
             Cancel
           </Button>
-          <Button type="submit" className={cn("", "cursor-pointer")} size="lg">
-            Create Division
+          <Button
+            type="submit"
+            disabled={createLoading}
+            className={cn("", "cursor-pointer")}
+            size="lg"
+          >
+            {createLoading ? (
+              <>
+                <Loader className="size-4 animate-spin" />
+                Create Division
+              </>
+            ) : (
+              `Create Division`
+            )}
           </Button>
         </div>
       </form>
