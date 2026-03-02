@@ -1,13 +1,20 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { mockAssignedTours } from "@/mock/assignedTours";
+import { useGetGuideAssignedToursQuery } from "@/redux/features/guide";
+import { Tour } from "@/redux/features/guide/guide.types";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useMemo, useState } from "react";
 
-const getToursByDate = (tours: typeof mockAssignedTours, date: Date) => {
+const getToursByDate = (tours: Tour[], date: Date) => {
   return tours.filter((tour) => {
-    const tourDate = new Date(tour.date);
-    return tourDate.toDateString() === date.toDateString();
+    const tourDate = new Date(tour.startDate);
+
+    return (
+      tourDate.getFullYear() === date.getFullYear() &&
+      tourDate.getMonth() === date.getMonth() &&
+      tourDate.getDate() === date.getDate()
+    );
   });
 };
 
@@ -46,6 +53,9 @@ const Calender = ({
     return days;
   }, [currentMonth, daysInMonth, firstDay]);
 
+  const { data, isLoading, error } = useGetGuideAssignedToursQuery();
+  const assignedTours = data?.data;
+
   const handlePrevMonth = () => {
     setCurrentMonth(
       new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1),
@@ -73,7 +83,9 @@ const Calender = ({
         >
           <ChevronLeft size={20} className="text-foreground" />
         </Button>
-        <h3 className="lg:text-lg font-semibold text-foreground text-center">{monthName}</h3>
+        <h3 className="lg:text-lg font-semibold text-foreground text-center">
+          {monthName}
+        </h3>
         <Button
           variant="link"
           size={"default"}
@@ -103,11 +115,12 @@ const Calender = ({
             return <div key={`empty-${idx}`} className="aspect-square" />;
           }
 
-          const toursOnDate = getToursByDate(mockAssignedTours, date);
+          const toursOnDate =
+            assignedTours && getToursByDate(assignedTours, date);
           const isSelected =
             selectedDate?.toDateString() === date.toDateString();
           const isToday = new Date().toDateString() === date.toDateString();
-          const hasTours = toursOnDate.length > 0;
+          const hasTours = toursOnDate && toursOnDate?.length > 0;
 
           return (
             <button

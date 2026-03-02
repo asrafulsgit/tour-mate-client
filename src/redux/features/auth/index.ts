@@ -9,14 +9,14 @@ export const authApi = baseApi.injectEndpoints({
         method: "POST",
         body: data,
       }),
-      invalidatesTags: ["Auth", "User", "Booking","GuideApplication"],
+      invalidatesTags: ["Auth", "User", "Booking","GuideApplication","AssginedTours"],
     }),
     logout: builder.mutation<LoginResponse, void>({
       query: () => ({
         url: "/auth/logout",
         method: "GET",
       }),
-      invalidatesTags: ["User", "Auth"],
+      invalidatesTags: ["Auth", "User", "Booking","GuideApplication","AssginedTours"],
     }),
     forgotPassword: builder.mutation<LoginResponse, { email: string }>({
       query: (data) => ({

@@ -6,20 +6,38 @@ import { useState } from "react";
 import Calender from "./Calender";
 import ToursSummary from "./ToursSummary";
 import SelectedDateTour from "./SelectedDateTour";
+import { useGetGuideAssignedToursQuery } from "@/redux/features/guide";
+import { ToursCalendarSectionSkeleton } from "./CalenderSkeleton";
+import ApiErrorPage from "@/components/shared/ApiErrorPage";
+import { Tour } from "@/redux/features/guide/guide.types";
 
-const getToursByDate = (tours: typeof mockAssignedTours, date: Date) => {
+const getToursByDate = (tours: Tour[], date: Date) => {
   return tours.filter((tour) => {
-    const tourDate = new Date(tour.date);
-    return tourDate.toDateString() === date.toDateString();
+    const tourDate = new Date(tour.startDate);
+
+    return (
+      tourDate.getFullYear() === date.getFullYear() &&
+      tourDate.getMonth() === date.getMonth() &&
+      tourDate.getDate() === date.getDate()
+    );
   });
 };
 
 const CalenderView = () => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-
-  const selectedDateTours = selectedDate
-    ? getToursByDate(mockAssignedTours, selectedDate)
-    : [];
+  console.log("selectedDate", selectedDate);
+  const { data, isLoading, error } = useGetGuideAssignedToursQuery();
+  const assignedTours = data?.data;
+  console.log("assignedTours", assignedTours);
+  const selectedDateTours =
+    selectedDate && assignedTours
+      ? getToursByDate(assignedTours, selectedDate)
+      : [];
+  console.log(selectedDateTours);
+  if (isLoading) {
+    return <ToursCalendarSectionSkeleton />;
+  }
+  if (error) return <ApiErrorPage name="tours" />;
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-8">
@@ -56,12 +74,14 @@ const CalenderView = () => {
             <div className="space-y-6">
               {selectedDateTours.length > 0 ? (
                 selectedDateTours.map((tour) => (
-                  <SelectedDateTour key={tour.id} tour={tour} />
+                  <SelectedDateTour key={tour._id} tour={tour} />
                 ))
               ) : (
                 <Card className="p-6 lg:p-12 text-center gap-3 lg:gap-6">
-                  <Calendar className="mx-auto lg:mb-4 text-muted-foreground opacity-50 
-                   w-9 h-9 lg:w-12 lg:h-12"/>
+                  <Calendar
+                    className="mx-auto lg:mb-4 text-muted-foreground opacity-50 
+                   w-9 h-9 lg:w-12 lg:h-12"
+                  />
                   <p className="text-muted-foreground lg:mb-2">
                     No tours scheduled for this date
                   </p>

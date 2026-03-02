@@ -68,12 +68,13 @@ export const guideApi = baseApi.injectEndpoints({
         method: "GET",
       })
     }),
-    getGuideAssignedTours: builder.query<GetGuideAssignedToursResponse, {limit ?: number}>({
+    getGuideAssignedTours: builder.query<GetGuideAssignedToursResponse, {limit ?: number} | void>({
       query: (params) => ({
         url: "/guide/assigned/tours",
         method: "GET",
-        params
-      })
+        params: params || undefined
+      }),
+      providesTags :["AssginedTours"]
     })
   }),
 });
