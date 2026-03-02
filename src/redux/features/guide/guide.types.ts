@@ -91,3 +91,46 @@ export interface ISuccessResponse {
   message: string;
   data: null;
 }
+
+export interface GuideStats {
+  _id: string | null;
+  completedTours: number;
+  upcomingTours: number;
+  pendingTours: number;
+  totalGuests: number;
+}
+
+export interface GetGuideStatsResponse {
+  success: boolean;
+  message: string;
+  data: GuideStats;
+}
+
+export type Tour = {
+  _id: string;
+  title: string;
+  description: string;
+  images: string[];
+  location: string;
+  costFrom: number;
+  startDate: string;
+  endDate: string;
+  included: string[];
+  amenities: string[];
+  tourPlan: string[];
+  maxGuest: number;
+  minAge: number;
+  division: string;
+  tourType: string;
+  guide?: string;
+  slug: string;
+  reviews: number;
+  rating: number;
+  createdAt: string;
+  updatedAt: string;
+};
+export interface GetGuideAssignedToursResponse {
+  success: boolean;
+  message: string;
+  data: Tour[];
+}

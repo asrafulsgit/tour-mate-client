@@ -1,19 +1,19 @@
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { AssignedTour } from "@/mock/assignedTours";
+import { Tour } from "@/redux/features/guide/guide.types";
+import { format } from "date-fns";
 import Image from "next/image";
 import Link from "next/link";
 
-const AssignedTourCard = ({ tour }: { tour: AssignedTour }) => {
+const AssignedTourCard = ({ tour }: { tour: Tour }) => {
   return (
-    <Card key={tour.id} className="p-3 ms:p-6 hover:border-primary transition">
+    <Card key={tour._id} className="p-3 ms:p-6 hover:border-primary transition">
       <div className="grid grid-cols-1 md:grid-cols-4 gap-3 sm:gap-6">
         {/* Tour Image */}
         <div className="relative h-40 rounded-lg overflow-hidden md:col-span-1">
           <Image
-            src={tour.image || "/public/placeholder.png"}
-            alt={tour.tourTitle}
+            src={tour.images[0] || "/public/placeholder.png"}
+            alt={tour.title}
             fill
             className="object-cover"
           />
@@ -24,43 +24,36 @@ const AssignedTourCard = ({ tour }: { tour: AssignedTour }) => {
           <div className="flex items-start justify-between mb-3">
             <div>
               <h3 className="heading sm:text-lg font-bold text-foreground">
-                {tour.tourTitle}
+                {tour.title}
               </h3>
               <p className="text-muted-foreground text-sm">{tour.location}</p>
             </div>
-            <Badge
-              variant={tour.status === "confirmed" ? "secondary" : "outline"}
-            >
-              {tour.status.charAt(0).toUpperCase() + tour.status.slice(1)}
-            </Badge>
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4 mb-4">
             <div>
               <p className="text-xs text-muted-foreground mb-1">Date & Time</p>
               <p className="font-semibold text-foreground text-sm">
-                {new Date(tour.date).toLocaleDateString()} at {tour.time}
+                {format(tour.startDate, "dd/MM/yyyy")}
               </p>
             </div>
             <div>
-              <p className="text-xs text-muted-foreground mb-1">Duration</p>
+              <p className="text-xs text-muted-foreground mb-1">End Date</p>
               <p className="font-semibold text-foreground text-sm">
-                {tour.duration}
+                {format(tour.endDate, "dd/MM/yyyy")}
               </p>
             </div>
             <div>
               <p className="text-xs text-muted-foreground mb-1">Guests</p>
               <p className="font-semibold text-foreground text-sm">
-                {tour.registeredGuests}/{tour.maxGuests}
+                {tour.maxGuest}
               </p>
             </div>
           </div>
 
           <div className="flex gap-3">
             <Button asChild size="sm">
-              <Link href={`/guide/assigned-tours/${tour.id}`}>
-                View Details
-              </Link>
+              <Link href={`/tours/${tour._id}`}>View Details</Link>
             </Button>
           </div>
         </div>

@@ -72,7 +72,7 @@ function EditProfileForm() {
         data: values,
       }).unwrap();
       toast.success("User updated successfully!");
-      router.push("/user/profile");
+      handleReset();
     } catch (error: any) {
       console.error(error.data.message);
       toast.error("User profile update failed");
@@ -202,7 +202,7 @@ function EditProfileForm() {
                   disabled={updateUserLoading}
                   className={"flex-1 cursor-pointer"}
                 >
-                  {isLoading ? (
+                  {updateUserLoading ? (
                     <>
                       <Loader className="size-4 animate-spin" />
                       Save Changes

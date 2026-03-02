@@ -2,6 +2,8 @@ import { baseApi } from "@/redux/api/baseApi";
 import {
   GetGuideApplicationResponse,
   GetGuideApplicationsResponse,
+  GetGuideAssignedToursResponse,
+  GetGuideStatsResponse,
   GuideApplicationResponse,
   IGuideApplicationParams,
   IGuideApplicationResponse,
@@ -60,6 +62,19 @@ export const guideApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["GuideApplication"],
     }),
+    getGuideStats: builder.query<GetGuideStatsResponse, void>({
+      query: () => ({
+        url: "/guide/stats",
+        method: "GET",
+      })
+    }),
+    getGuideAssignedTours: builder.query<GetGuideAssignedToursResponse, {limit ?: number}>({
+      query: (params) => ({
+        url: "/guide/assigned/tours",
+        method: "GET",
+        params
+      })
+    })
   }),
 });
 
@@ -70,4 +85,6 @@ export const {
   useGetGuideApplicationQuery,
   useApproveApplicationMutation,
   useRejectApplicationMutation,
+  useGetGuideStatsQuery,
+  useGetGuideAssignedToursQuery
 } = guideApi;

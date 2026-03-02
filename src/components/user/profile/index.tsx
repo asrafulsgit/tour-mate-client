@@ -49,9 +49,11 @@ function ProfilePage() {
   const [updateUser, { isLoading: updatePictureLoading }] =
     useUpdateUserMutation();
   const user = data?.data;
+  const isUser = user?.role === Role.USER;
+  const isGuide = user?.role === Role.GUIDE;
   if (isLoading) return <UserProfileSkeleton />;
   if (isError) return <ApiErrorPage name="User profile" />;
-  const onSubmit = async (data: ProfileFormValues) => { 
+  const onSubmit = async (data: ProfileFormValues) => {
     if (!user?._id) return toast.error("User Id is not found");
     try {
       const formData = new FormData();
@@ -62,7 +64,7 @@ function ProfilePage() {
       }).unwrap();
     } catch (error: any) {
       console.error(error.data.message);
-      toast.error(error.data.message || "Profile update failed!")
+      toast.error(error.data.message || "Profile update failed!");
     }
   };
   return (
@@ -94,7 +96,11 @@ function ProfilePage() {
                             className="rounded-full object-cover border-4 border-primary/20"
                           />
                           <label className="absolute bottom-0 right-0 bg-primary text-primary-foreground p-2 rounded-full cursor-pointer hover:bg-primary/90 transition">
-                            {updatePictureLoading ? <Loader className="size-4 animate-spin" /> : <Camera size={16} />}
+                            {updatePictureLoading ? (
+                              <Loader className="size-4 animate-spin" />
+                            ) : (
+                              <Camera size={16} />
+                            )}
                             <input
                               type="file"
                               accept="image/*"
@@ -121,11 +127,7 @@ function ProfilePage() {
               <div className="flex items-center justify-center gap-2 mb-4">
                 <Badge
                   variant={
-                    user?.role === Role.USER
-                      ? "default"
-                      : user?.role === "GUIDE"
-                        ? "secondary"
-                        : "destructive"
+                    isUser ? "default" : isGuide ? "secondary" : "destructive"
                   }
                 >
                   {user?.role}
@@ -140,7 +142,15 @@ function ProfilePage() {
                 {user?.createdAt &&
                   format(new Date(user.createdAt), "dd MMM yyyy")}
               </p>
-              <Link href="/user/profile/update">
+              <Link
+                href={
+                  isUser
+                    ? "/user/profile/update"
+                    : isGuide
+                      ? "/guide/profile/update"
+                      : ""
+                }
+              >
                 <Button variant="default" className={cn("", "cursor-pointer")}>
                   Edit Profile
                 </Button>
