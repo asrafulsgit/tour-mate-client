@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function proxy(request: NextRequest) {
   const accessToken = request.cookies.get("accessToken")?.value;
   const refreshToken = request.cookies.get("refreshToken")?.value;
+  console.log("accessToken",accessToken)
   // Define route types
   const isAuthRoute = request.nextUrl.pathname.startsWith("/auth");
   const isPrivateRoute =
