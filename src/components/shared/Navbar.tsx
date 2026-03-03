@@ -168,7 +168,6 @@ function Navbar() {
       toast.success("User logout successfull");
       router.replace("/auth/login");
     } catch (error: any) {
-      console.error("Logout failed", error);
       toast.error(error.data.message);
     }
   }; 

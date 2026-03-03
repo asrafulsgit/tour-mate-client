@@ -56,7 +56,6 @@ function OtpForm({
       await verifyOtp(payload).unwrap();
       router.push("/auth/login");
     } catch (error: any) {
-      console.log(error);
       toast.error(error.data.message || "Failed to verify OTP");
     }
   };
@@ -69,7 +68,6 @@ function OtpForm({
       await sendOtp({ email }).unwrap();
       toast.success("Otp resend successfull");
     } catch (error: any) {
-      console.log(error);
       toast.error(error.data.message || "Failed to send OTP");
     }
   };

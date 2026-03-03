@@ -15,7 +15,6 @@ const AuthGate = ({ children }: { children: React.ReactNode }) => {
   const guidePath = pathName.startsWith("/guide");
 
   if (isLoading) return <Loader />;
-  console.log(role)
   if (
     (userPath && role !== Role.USER) ||
     (adminPath && (role !== Role.ADMIN && role !== Role.SUPER_ADMIN)) ||

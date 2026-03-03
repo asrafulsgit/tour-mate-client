@@ -53,7 +53,6 @@ function SigninForm() {
       toast.success("Signin successfull");
       router.push("/");
     } catch (error: any) {
-      console.log(error);
       if (error.data.code === CUSTOM_ERROR.USER_NOT_VERIFIED) {
         return router.push("/auth/verify-email");
       }

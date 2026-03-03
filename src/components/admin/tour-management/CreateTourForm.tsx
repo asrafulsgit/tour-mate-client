@@ -115,7 +115,6 @@ function CreatetourForm() {
       toast.success("Tour created successfully!");
       handleCancell();
     } catch (error: any) {
-      console.error("Tour creation failed:", error);
       toast.error(error?.data?.message || "Failed to create tour");
     }
   };

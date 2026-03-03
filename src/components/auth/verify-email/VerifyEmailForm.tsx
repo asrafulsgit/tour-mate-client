@@ -39,7 +39,6 @@ const VerifyEmailForm = () => {
       await sendOtp(values).unwrap();
       router.push(`/auth/verify-email/verification?email=${values.email}`);
     } catch (error: any) {
-      console.log(error);
       toast.error(error.data.message || "Failed to send OTP");
     }
   };

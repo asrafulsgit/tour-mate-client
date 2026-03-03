@@ -51,7 +51,6 @@ function GuideDialogs({
       onClose();
       toast.success("Application approved!");
     } catch (error: any) {
-      console.error(error.data.message);
       toast.error(error?.data?.message || "Approve application failed");
     }
   };
@@ -64,7 +63,6 @@ function GuideDialogs({
       onClose();
       toast.success("Application rejected!");
     } catch (error: any) {
-      console.error(error.data.message);
       toast.error(error?.data?.message || "Reject application failed");
     }
   };

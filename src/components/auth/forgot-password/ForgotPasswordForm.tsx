@@ -47,7 +47,6 @@ const ForgotPasswordForm = ({
       onFormSubmit();
       onEmail(values.email);
     } catch (error: any) {
-      console.log(error);
       if (error.data.code === CUSTOM_ERROR.USER_NOT_VERIFIED) {
         return router.push("/auth/verify-email");
       }

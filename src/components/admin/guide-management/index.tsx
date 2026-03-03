@@ -31,7 +31,6 @@ function GuideManagementPage() {
   const limit = getQuery("limit") || 10;
 
   const handleDetails = useCallback((id: string) => {
-    console.log("hello")
     setModal({ type: "DETAILS", id });
   }, []);
 

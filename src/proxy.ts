@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function proxy(request: NextRequest) {
   const accessToken = request.cookies.get("accessToken")?.value;
   const refreshToken = request.cookies.get("refreshToken")?.value;
-  console.log("accessToken",accessToken)
+  console.log("accessToken",accessToken) 
   // Define route types
   const isAuthRoute = request.nextUrl.pathname.startsWith("/auth");
   const isPrivateRoute =
@@ -32,10 +32,8 @@ export async function proxy(request: NextRequest) {
       if (setCookie) {
         response.headers.append("set-cookie", setCookie);
       }
-
       return response;
     } catch (err) {
-      console.error("Refresh error:", err);
       response.cookies.delete("refreshToken");
       const loginUrl = new URL("/auth/login", request.url);
       loginUrl.searchParams.set("redirect", request.nextUrl.pathname);

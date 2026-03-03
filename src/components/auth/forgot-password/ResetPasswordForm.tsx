@@ -63,7 +63,6 @@ function ResetPasswordForm() {
       toast.success("Password reset successfull");
       router.push("/auth/login");
     } catch (error: any) {
-      console.log(error);
       toast.error(error.data.message || "Something went wrorng!");
     }
   };

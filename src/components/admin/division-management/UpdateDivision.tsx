@@ -63,7 +63,6 @@ function UpdateDivisionForm() {
       if (division?.thumbnail) {
         setThumbnail(division?.thumbnail);
       }
-      console.log(division?.thumbnail);
       form.reset({
         name: division.name || "",
       });
@@ -83,7 +82,6 @@ function UpdateDivisionForm() {
       toast.success("Division updated!");
       handleCancell();
     } catch (error: any) {
-      console.error(error.data.message);
       toast.error(error?.data?.message || "Update division failed");
     }
   };

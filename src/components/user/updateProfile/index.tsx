@@ -74,7 +74,6 @@ function EditProfileForm() {
       toast.success("User updated successfully!");
       handleReset();
     } catch (error: any) {
-      console.error(error.data.message);
       toast.error("User profile update failed");
     }
   };

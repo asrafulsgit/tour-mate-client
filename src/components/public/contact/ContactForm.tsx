@@ -51,13 +51,11 @@ const ContactForm = () => {
   const [sendMessage, { isLoading, error, data }] = useSendMessageMutation();
 
   const onSubmit = async (data: ContactFormValues) => {
-    console.log("Form submitted:", data);
     try {
       await sendMessage(data).unwrap();
       toast.success("Thank you! We've received your message");
       form.reset();
     } catch (err: any) {
-      console.error(err);
       toast.error(err.data.message || "Something went wrong");
     }
   };

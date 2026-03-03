@@ -63,7 +63,6 @@ function ProfilePage() {
         data: formData,
       }).unwrap();
     } catch (error: any) {
-      console.error(error.data.message);
       toast.error(error.data.message || "Profile update failed!");
     }
   };

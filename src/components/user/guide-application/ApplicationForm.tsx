@@ -54,7 +54,6 @@ const ApplicationForm = ({
       onHandleStatus();
       toast.success("Application Submitted");
     } catch (err: any) {
-      console.log("Failed to apply:", err.data || err.message);
       toast.error(err.data.message || "Something went wrong!");
     }
   };

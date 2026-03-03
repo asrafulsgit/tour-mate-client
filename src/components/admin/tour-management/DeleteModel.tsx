@@ -26,7 +26,6 @@ function DeleteModel({ data, open, onClose }: DeleteModelProps) {
       toast.success("Tour delete successfull");
       onClose();
     } catch (error: any) {
-      console.error("Failed to delete tour:", error);
       toast.error(error?.data?.message || "Failed to delete tour");
     }
   };

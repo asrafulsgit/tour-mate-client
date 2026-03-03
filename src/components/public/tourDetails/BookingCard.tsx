@@ -29,7 +29,6 @@ const BookingCard = ({ tour }: { tour: Tour }) => {
       }).unwrap();
       window.location.href = res.data.paymentUrl;
     } catch (error: any) {
-      console.error(error);
       if (error.data.code === CUSTOM_ERROR.TOKEN_NOT_FOUND) {
         router.push("/auth/login");
         return;

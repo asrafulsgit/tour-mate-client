@@ -168,7 +168,6 @@ function UpdatetourForm() {
       toast.success("Tour update successfully!");
       handleCancell();
     } catch (error: any) {
-      console.error("Tour update failed:", error);
       toast.error(error?.data?.message || "Failed to update tour");
     }
   };

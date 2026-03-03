@@ -67,7 +67,6 @@ function CreateDivisionForm() {
       toast.success("Division created!");
       handleCancell();
     } catch (error: any) {
-      console.error(error.data.message);
       toast.error(error?.data?.message || "Create division failed");
     }
   };

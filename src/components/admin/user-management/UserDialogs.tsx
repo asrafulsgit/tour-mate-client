@@ -55,7 +55,6 @@ export default function UserDialogs({
       onClose();
       toast.success("User status Update successfully!");
     } catch (error: any) {
-      console.error(error.data.message);
       toast.error(error?.data?.message || "User status update failed");
     }
   };

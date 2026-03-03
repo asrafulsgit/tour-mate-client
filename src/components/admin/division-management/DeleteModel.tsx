@@ -31,7 +31,6 @@ function DeleteModel({
       toast.success("Division Deleted!");
       onClose();
     } catch (error: any) {
-      console.error(error.data.message);
       toast.error(error?.data?.message || "Delete division failed");
     }
   };

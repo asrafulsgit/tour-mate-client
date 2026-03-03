@@ -25,15 +25,12 @@ const getToursByDate = (tours: Tour[], date: Date) => {
 
 const CalenderView = () => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  console.log("selectedDate", selectedDate);
   const { data, isLoading, error } = useGetGuideAssignedToursQuery();
   const assignedTours = data?.data;
-  console.log("assignedTours", assignedTours);
   const selectedDateTours =
     selectedDate && assignedTours
       ? getToursByDate(assignedTours, selectedDate)
       : [];
-  console.log(selectedDateTours);
   if (isLoading) {
     return <ToursCalendarSectionSkeleton />;
   }

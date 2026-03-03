@@ -53,7 +53,6 @@ export default function BookingDetailsPage() {
       const res = await rePayment({ id: bookingId }).unwrap();
       window.location.href = res.data.paymentUrl;
     } catch (error) {
-      console.error(error);
       toast.error("Re-payment failed");
     }
   };
