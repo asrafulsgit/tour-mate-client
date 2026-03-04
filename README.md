@@ -1,36 +1,106 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# TourMate Frontend
+
+**Project Name:** TourMate  
+
+**Admin Login:**  
+- Email: `sourob2356@gmail.com`  
+- Password: `example123`
+  
+**Guide Login:**  
+- Email: `miraz@gmail.com`  
+- Password: `miraz123`
+
+**User Login:**  
+- Email: `fullstackdev2356@gmail.com`  
+- Password: `example123`
+  
+**Live URL:** _[[https://tour-mate-client.vercel.app](https://tour-mate-client.vercel.app)]_
+**Server source code:** _[[https://tour-mate-server-swart.vercel.app](https://tour-mate-server-swart.vercel.app)]_
+
+---
+
+## 🌟 Overview
+
+A Fullstack application for managing and organizing tours, where admins and super admins can create and manage tour packages. Users can explore available tours, book their desired ones, and make secure payments through SSLCommerz. Each tour includes assigned guides responsible for assisting tourists during their trips.
+
+---
+
+## 🚀 Key Features
+
+### User Authentication
+- Users can register and log in.
+- Google OAuth login support via Passport.
+- Forgot password, Verify email, Reset password etc.
+
+### Tours 
+- List all available tours with:
+  - Search by name, title or location
+  - Filter by division/type etc
+  - Pagination
+- **Booking Logic**: 
+  - Only **User can book tours**.
+- View tours details, including guide info, reviews, and description.
+- Add a review after attending a tour.
+
+### User Dashboard
+- See User Stats
+- Manage user profile and information
+- See list of booked Tours
+- Re Payment booked tours
+- See Guide applications
+
+### Guide Dashboard
+- See Guide Stats
+- Manage guide profile and information
+- Manage Assigned tours
+
+### Admin Dashboard
+- See tours, users, bookings stats 
+- Manage Users, Guides, Admins or Super Admins
+- Approve, reject Guide applications 
+- Manage tours
+- Manage bookings
+- Manage divisions
+
+### Additional Pages
+- **Landing Page** with:
+  - Hero
+  - Featured Tours
+  - Explore by division
+  - Why Choose TourMate
+  - Become a Guide
+  - What Our Travelers Say
+  - Subscription banner
+- **Static Content Pages**:
+  - About
+  - Contact
+  - FAQ
+  - Privacy Policy
+  - Terms & Conditions
+- **404 Not Found Page**:
+  - not found 
+
+---
 
 ## Getting Started
 
-First, run the development server:
+### 1. Clone the Repository
+```bash
+git clone https://github.com/asrafulsgit/tour-mate-client.git
+cd tour-mate-client
+Install dependencies
+
+bash
+npm install
+```
+```env
+Configure environment variables
+Create .env.local with:
+NEXT_PUBLIC_API_BASE_URL = ""
+```
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
