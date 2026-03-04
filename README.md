@@ -25,7 +25,15 @@ A Fullstack application for managing and organizing tours, where admins and supe
 
 ---
 
-## 🚀 Key Features
+## Tech Stack
+
+- **Next.js**
+- **TypeScript**
+- **RTK query**
+- **Shadcn**
+- **RFH**
+
+## Key Features
 
 ### User Authentication
 - Users can register and log in.
