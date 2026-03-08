@@ -3,7 +3,6 @@ import { NextRequest, NextResponse } from "next/server";
 export async function proxy(request: NextRequest) {
   const accessToken = request.cookies.get("accessToken")?.value;
   const refreshToken = request.cookies.get("refreshToken")?.value;
-  console.log("accessToken",accessToken) 
   // Define route types
   const isAuthRoute = request.nextUrl.pathname.startsWith("/auth");
   const isPrivateRoute =
@@ -15,7 +14,7 @@ export async function proxy(request: NextRequest) {
   if (!accessToken && refreshToken) {
     try {
       const resp = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/refresh-token`,
+        `https://tour-mate-server-swart.vercel.app/api/v1/auth/refresh-token`,
         {
           method: "POST",
           headers: {
@@ -24,7 +23,6 @@ export async function proxy(request: NextRequest) {
           },
         },
       );
-
       if (!resp.ok) {
         throw new Error("Refresh failed");
       }
@@ -34,6 +32,7 @@ export async function proxy(request: NextRequest) {
       }
       return response;
     } catch (err) {
+      console.log(err);
       response.cookies.delete("refreshToken");
       const loginUrl = new URL("/auth/login", request.url);
       loginUrl.searchParams.set("redirect", request.nextUrl.pathname);

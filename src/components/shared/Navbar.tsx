@@ -130,8 +130,7 @@ const navItems: Item[] = [
   },
 ];
 
-function Navbar() {
-  const router = useRouter();
+function Navbar() { 
   const pathName = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
@@ -166,11 +165,11 @@ function Navbar() {
     try {
       await logout().unwrap();
       toast.success("User logout successfull");
-      router.replace("/auth/login");
+      window.location.replace("/auth/login");
     } catch (error: any) {
       toast.error(error.data.message);
     }
-  }; 
+  };
   return (
     <>
       <header className="border-b border-border bg-background sticky top-0 z-60">

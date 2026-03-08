@@ -19,6 +19,9 @@ export default function GuideApplicationPage() {
   const handleStatus = () => {
     setActiveTab("status");
   };
+  const handleNotFound = (value : "new") => {
+    setActiveTab(value);
+  };
   return (
     <main className="grow">
       {/* Header */}
@@ -65,7 +68,9 @@ export default function GuideApplicationPage() {
             {/* Application Status */}
             {activeTab === "status" && (
               <>
-                {guideApplications?.length === 0 && <NotFoundApplication />}
+                {guideApplications?.length === 0 && (
+                  <NotFoundApplication onSetActiveTab={handleNotFound} />
+                )}
                 {guideApplications && (
                   <div className="space-y-4">
                     {guideApplications?.map((application) => (

@@ -52,8 +52,8 @@ function SigninForm() {
       await loginUser(values).unwrap();
       toast.success("Signin successfull");
       router.push("/");
-    } catch (error: any) {
-      if (error.data.code === CUSTOM_ERROR.USER_NOT_VERIFIED) {
+    } catch (error: any) { 
+      if (error?.data?.code === CUSTOM_ERROR.USER_NOT_VERIFIED) {
         return router.push("/auth/verify-email");
       }
       toast.error(error.data.message || "Something went wrorng!");

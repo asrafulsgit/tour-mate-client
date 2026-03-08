@@ -5,10 +5,18 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: '**'
+        protocol: "https",
+        hostname: "**",
       },
     ],
+  }, 
+  async rewrites() {
+    return [
+      {
+        source: "/api/:path*",
+        destination: "https://tour-mate-server-swart.vercel.app/api/:path*",
+      },
+    ];
   },
 };
 

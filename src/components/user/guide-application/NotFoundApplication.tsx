@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { FileText } from "lucide-react";
 
-const NotFoundApplication = () => {
+const NotFoundApplication = ({onSetActiveTab} : {onSetActiveTab : (data : "new")=> void}) => {
   return (
     <Card className="p-4 sm:p-8 text-center gap-2 sm:gap-6">
       <FileText
@@ -16,7 +16,7 @@ const NotFoundApplication = () => {
         to get started.
       </p>
       <Button
-      //   onClick={() => setActiveTab("new")}
+        onClick={() => onSetActiveTab("new")}
       >
         Submit Application
       </Button>

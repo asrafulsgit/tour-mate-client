@@ -17,7 +17,7 @@ function DashboardPage() {
               You haven't written any reviews yet
             </p>
             <Button asChild>
-              <Link href="/dashboard">Write a Review</Link>
+              <Link href="/tours">Write a Review</Link>
             </Button>
           </div>
         </div>
