@@ -22,6 +22,7 @@ export const metadata: Metadata = {
   title: "TourMate - Discover Adventures Around You",
   description:
     "Book unforgettable tours with expert local guides. Explore destinations, connect with travelers, and create lasting memories.",
+  keywords: ["travel", "tour", "booking", "tour mate"],
 };
 
 export default function RootLayout({

@@ -16,7 +16,6 @@ export const footerLinks = [
   {
     title: "Support",
     links: [
-      { label: "Help Center", href: "/help-center" },
       { label: "Contact Us", href: "/contact" },
       { label: "Privacy Policy", href: "/privacy-policy" },
       { label: "Terms of Service", href: "/terms-of-service" },
@@ -30,11 +29,11 @@ export const footerContacts = [
   },
   {
     icon: Phone,
-    value: "+1 (555) 123-4567",
+    value: "+880 1820286432",
   },
   {
     icon: MapPin,
-    value: "San Francisco, CA 94105",
+    value: "Dhanka, Bangladesh",
   },
 ];
 
@@ -101,13 +100,13 @@ export function Footer() {
         <div className="border-t border-border pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-muted-foreground">
           <p>&copy; 2025 TourMate. All rights reserved.</p>
           <div className="flex gap-6 mt-4 md:mt-0">
-            <Link href="#" className="hover:text-foreground transition">
+            <Link target="_blank" href="https://facebook.com" className="hover:text-foreground transition">
               Facebook
             </Link>
-            <Link href="#" className="hover:text-foreground transition">
+            <Link target="_blank" href="https://x.com" className="hover:text-foreground transition">
               Twitter
             </Link>
-            <Link href="#" className="hover:text-foreground transition">
+            <Link target="_blank" href="https://instagram.com" className="hover:text-foreground transition">
               Instagram
             </Link>
           </div>
