@@ -28,7 +28,7 @@ const Divisions = () => {
   const divisions = data?.data;
 
   if (isLoading) return <DivisionCardSkeleton />;
-  if (error) return <ApiErrorPage name="Divisions" />;
+  if (error) return <ApiErrorPage name="Divisions" isButton={false}/>;
   return divisions?.map((division) => (
     <Link
       key={division._id}

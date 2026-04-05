@@ -51,7 +51,7 @@ const Tours = () => {
     limit: 6,
   });
   if (isLoading ) return <ToursSkeleton />;
-  if (error) return <ApiErrorPage name="Fetured tours" />;
+  if (error) return <ApiErrorPage name="Fetured tours" isButton={false} />;
   return data?.data.map((tour) => <TourCard key={tour._id} tour={tour} />);
 };
 
