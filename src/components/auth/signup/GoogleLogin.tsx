@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 const GoogleLogin = () => {
   const handleGoogleLogin = async () => {
-    window.location.href = `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/google`;
+    window.location.href = `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v1/auth/google`;
   };
   return (
     <Button
